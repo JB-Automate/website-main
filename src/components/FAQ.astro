@@ -1,0 +1,12 @@
+---
+import Icon from "./Icon.astro";
+import { siteContent } from "../content/site";
+const { faq } = siteContent;
+---
+
+<section class="container faq-section" aria-labelledby="faq-heading">
+  <h2 id="faq-heading">{faq.heading[0]}<br />{faq.heading[1]}</h2>
+  <div class="faq-list">
+    {faq.items.map((item) => <details name="frequent-questions"><summary><span>{item.question}</span><Icon name="plus" size={19} /></summary><p>{item.answer}</p></details>)}
+  </div>
+</section>

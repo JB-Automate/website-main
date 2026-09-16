@@ -1,0 +1,20 @@
+---
+import Icon from "./Icon.astro";
+import WorkBench from "./WorkBench.astro";
+import { siteContent } from "../content/site";
+const { hero, primaryAction } = siteContent;
+---
+
+<section class="hero" aria-labelledby="hero-heading" data-scroll-scene="hero">
+  <div class="hero-sticky" data-hero-stage>
+    <div class="hero-copy container">
+      <h1 id="hero-heading"><span>{hero.heading[0]}</span><span>{hero.heading[1]}</span></h1>
+      <p class="hero-description">{hero.description}</p>
+      <div class="hero-actions">
+        <a href="#contact" class="button button--primary">{primaryAction}<Icon name="diagonal" size={18} /></a>
+        <a href="#work" class="text-link">{hero.secondaryAction}<Icon name="arrow" size={18} /></a>
+      </div>
+    </div>
+    <WorkBench />
+  </div>
+</section>

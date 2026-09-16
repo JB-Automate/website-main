@@ -1,0 +1,39 @@
+---
+import WorkshopArt from "./WorkshopArt.astro";
+---
+
+<figure class="workbench">
+  <div class="paper-stage">
+    <WorkshopArt kind="bench" />
+    <div class="bench-input bench-request" data-motion="request">
+      <div class="loose-sheet sheet-request">
+        <span class="sheet-title">The request.</span>
+        <svg viewBox="0 0 160 85" fill="none" aria-hidden="true"><path d="M8 18h129M8 37h97M8 56h72" stroke="currentColor" stroke-width="2" stroke-linecap="round" /><path d="m112 60 10 8 24-24" stroke="#3558C9" stroke-width="2.5" stroke-linecap="round" /></svg>
+      </div>
+    </div>
+    <div class="bench-input bench-notes" data-motion="notes">
+      <div class="loose-sheet sheet-notes">
+        <span class="sheet-title">The notes.</span>
+        <svg viewBox="0 0 160 75" fill="none" aria-hidden="true"><path d="M12 20c21-13 28 15 50 1s27 8 67 0M12 43c22-12 39 11 96-2M12 65h70" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+      </div>
+    </div>
+    <div class="bench-input bench-followup" data-motion="followup">
+      <div class="loose-sheet sheet-followup">
+        <span class="sheet-title">The follow-up.</span>
+        <svg viewBox="0 0 170 90" fill="none" aria-hidden="true"><path d="M13 15h142v63H13V15Z" stroke="currentColor" stroke-width="2" /><path d="m14 18 70 38 70-38" stroke="currentColor" stroke-width="2" stroke-linejoin="round" /></svg>
+      </div>
+    </div>
+    <div class="bench-result" data-motion="outcome">
+      <div class="ready-sheet">
+        <svg class="paper-clip" viewBox="0 0 40 75" fill="none" aria-hidden="true"><path d="M11 46V15c0-17 22-17 22 0v44c0 18-29 18-29 0V20c0-9 14-9 14 0v38" stroke="#748290" stroke-width="3" stroke-linecap="round" /></svg>
+        <p class="ready-title">One clear<br />next step.</p>
+        <p class="ready-description">Prepared for your review.</p>
+        <div class="ready-signature">
+          <span>Your call.</span>
+          <svg viewBox="0 0 130 38" fill="none" aria-hidden="true"><path data-draw pathLength="1" data-draw-start=".6" d="M6 25c28-18 83-18 116-9M15 34c35-12 65-13 98-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <figcaption class="workbench-caption">Illustrative workflow</figcaption>
+</figure>

@@ -1,0 +1,330 @@
+<script>
+  import { canPinHero, sceneProgress, serviceProgress, stageProgress, travelProgress } from "../lib/interaction";
+
+  interface Track {
+    animation: Animation;
+    start: number;
+    end: number;
+  }
+  interface Scene {
+    root: HTMLElement;
+    isService: boolean;
+    tracks: Track[];
+    points: HTMLElement[];
+    hovered: string | null;
+  }
+  interface Geometry {
+    width: number;
+    viewport: number;
+    header: number;
+    stage: number;
+    travel: number;
+    pinned: boolean;
+  }
+
+  function required<T extends Element>(root: ParentNode, selector: string): T {
+    const element = root.querySelector<T>(selector);
+    if (!element) throw new Error(`The page story is missing ${selector}.`);
+    return element;
+  }
+
+  const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const pointerPreference = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const roots = [...document.querySelectorAll<HTMLElement>("[data-scroll-scene]")];
+  const hero = required<HTMLElement>(document, '[data-scroll-scene="hero"]');
+  const heroStage = required<HTMLElement>(hero, "[data-hero-stage]");
+  const header = required<HTMLElement>(document, ".site-header");
+  const records = new Map<HTMLElement, Scene>();
+  const visible = new Set<Scene>();
+  const dirty = new Set<Scene>();
+  let geometry: Geometry | undefined;
+  let layoutDirty = true;
+  let frame = 0;
+  let observer: IntersectionObserver | undefined;
+  let resizeObserver: ResizeObserver | undefined;
+  let listeners: AbortController | undefined;
+  let firstStart = true;
+  let initialFragment: string | undefined;
+
+  function addTrack(scene: Scene, target: Element, name: string, keyframes: Keyframe[], start = 0, end = 1) {
+    stageProgress(0, start, end);
+    const animation = target.animate(keyframes, {
+      duration: 1000,
+      fill: "both",
+      easing: scene.root === hero || scene.isService ? "linear" : "cubic-bezier(.25,.65,.3,1)",
+    });
+    animation.pause();
+    animation.currentTime = 0;
+    animation.id = `jb-${scene.root.dataset.scrollScene}-${name}`;
+    scene.tracks.push({ animation, start, end });
+  }
+
+  function motion(scene: Scene, name: string, keyframes: Keyframe[], start = 0, end = 1) {
+    addTrack(scene, required(scene.root, `[data-motion="${name}"]`), name, keyframes, start, end);
+  }
+
+  function createScene(root: HTMLElement): Scene {
+    const kind = root.dataset.scrollScene;
+    const scene: Scene = {
+      root,
+      isService: kind === "apps" || kind === "workflows" || kind === "websites",
+      tracks: [],
+      points: [...root.querySelectorAll<HTMLElement>("[data-layer-description]")],
+      hovered: null,
+    };
+    records.set(root, scene);
+    switch (root.dataset.scrollScene) {
+      case "hero":
+        motion(scene, "request", [
+          { transform: "translate(calc(var(--hero-spread) * -1), -12px) rotate(-11deg)" },
+          { transform: "translate(0, 0) rotate(0deg)" },
+        ], .03, .75);
+        motion(scene, "notes", [
+          { transform: "translate(60px, 12px) rotate(-12deg)" },
+          { transform: "translate(0, 0) rotate(0deg)" },
+        ], .1, .82);
+        motion(scene, "followup", [
+          { transform: "translate(var(--hero-spread), 18px) rotate(13deg)" },
+          { transform: "translate(0, 0) rotate(0deg)" },
+        ], .02, .78);
+        motion(scene, "outcome", [
+          { opacity: 0, transform: "translateY(28px) rotate(5deg) scale(.91)" },
+          { opacity: 1, transform: "translateY(0) rotate(0deg) scale(1)" },
+        ], .16, .82);
+        motion(scene, "tray", [
+          { opacity: .3, transform: "translateY(18px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ], .15, .88);
+        break;
+      case "apps":
+        motion(scene, "app-input", [
+          { transform: "translate(var(--input-shift, -18px), -14px) rotate(var(--input-tilt, -11deg))" },
+          { transform: "translate(0, 0) rotate(-5deg)" },
+        ], 0, .65);
+        motion(scene, "app-output", [
+          { opacity: .3, transform: "translate(var(--scene-shift, 18px), 30px) rotate(var(--scene-tilt, 3deg))" },
+          { opacity: 1, transform: "translate(0, 0) rotate(0deg)" },
+        ], .12, .85);
+        motion(scene, "app-backing", [
+          { transform: "translate(8px, -6px) rotate(3deg)" },
+          { transform: "translate(0, 0) rotate(0deg)" },
+        ], .05, .8);
+        break;
+      case "workflows":
+        motion(scene, "route-request", [
+          { transform: "translate(var(--route-shift, -12px), 16px) rotate(var(--route-tilt, -8deg))" },
+          { transform: "translate(0, 0) rotate(0deg)" },
+        ], 0, .5);
+        motion(scene, "route-prepare", [
+          { transform: "translate(14px, -10px) rotate(8deg)" },
+          { transform: "translate(0, 0) rotate(0deg)" },
+        ], .15, .75);
+        motion(scene, "route-review", [
+          { transform: "translate(-10px, 15px) rotate(-6deg)" },
+          { transform: "translate(0, 0) rotate(0deg)" },
+        ], .36, .94);
+        motion(scene, "route-detour", [{ opacity: .85 }, { opacity: .12 }], .1, .85);
+        break;
+      case "websites":
+        motion(scene, "site-frame", [
+          { transform: "translate(var(--scene-shift, 10px), 20px) rotate(var(--scene-tilt, 3deg))" },
+          { transform: "translate(0, 0) rotate(0deg)" },
+        ], .02, .85);
+        motion(scene, "site-type", [
+          { opacity: .7, transform: "translate(-12px, 8px)" },
+          { opacity: 1, transform: "translate(0, 0)" },
+        ], .2, .9);
+        motion(scene, "site-fold-one", [
+          { transform: "translate(-12px, 24px) rotate(-8deg)" },
+          { transform: "translate(0, 0) rotate(0deg)" },
+        ], .1, .9);
+        motion(scene, "site-fold-two", [
+          { transform: "translate(20px, -20px) rotate(9deg)" },
+          { transform: "translate(0, 0) rotate(0deg)" },
+        ], .1, .9);
+        break;
+      case "security":
+        motion(scene, "boundary-base", [{ transform: "translateY(10px)" }, { transform: "translateY(0)" }], 0, .75);
+        break;
+      case "process":
+        break;
+      default:
+        throw new Error(`Unknown page story: ${root.dataset.scrollScene}.`);
+    }
+    root.querySelectorAll<SVGPathElement>("[data-draw]").forEach((path, index) => {
+      addTrack(scene, path, `ink-${index}`, [{ strokeDashoffset: "1" }, { strokeDashoffset: "0" }],
+        Number(path.dataset.drawStart ?? .08), Number(path.dataset.drawEnd ?? .95));
+    });
+    return scene;
+  }
+
+  function schedule() {
+    if (!frame && !document.hidden && listeners && !listeners.signal.aborted) frame = requestAnimationFrame(paint);
+  }
+
+  function measure() {
+    layoutDirty = true;
+    schedule();
+  }
+
+  function paint() {
+    frame = 0;
+    if (layoutDirty) {
+      const viewport = window.innerHeight;
+      const width = window.innerWidth;
+      const headerHeight = header.getBoundingClientRect().height;
+      const stage = Math.ceil(heroStage.getBoundingClientRect().height);
+      const pinned = canPinHero(width, viewport, headerHeight, stage);
+      const next: Geometry = { width, viewport, header: headerHeight, stage, pinned,
+        travel: pinned ? Math.round(viewport * .78) : Math.max(1, Math.min(stage * .6, viewport * .8)) };
+      const previous = geometry;
+      geometry = next;
+      layoutDirty = false;
+      for (const scene of records.values()) dirty.add(scene);
+      if (!previous || previous.width !== width || previous.viewport !== viewport ||
+        previous.header !== headerHeight || previous.stage !== stage || previous.pinned !== pinned) {
+        hero.style.setProperty("--hero-top", `${headerHeight}px`);
+        hero.style.setProperty("--hero-height", `${stage}px`);
+        hero.style.setProperty("--hero-travel", `${next.travel}px`);
+        hero.dataset.pinned = String(pinned);
+        // Sticky travel changes downstream geometry; measure those positions on the next frame.
+        schedule();
+        return;
+      }
+    }
+    if (!geometry) throw new Error("Page story geometry was not initialized.");
+    if (initialFragment && document.readyState === "complete") {
+      const hash = initialFragment;
+      initialFragment = undefined;
+      const target = document.querySelector(":target");
+      if (geometry.pinned && window.location.hash === hash && target?.isConnected) {
+        // The native fragment jump can precede insertion of the sticky travel.
+        target.scrollIntoView({ behavior: "instant", block: "start" });
+        schedule();
+        return;
+      }
+    }
+    const { viewport, header: headerHeight, travel } = geometry;
+    const positions = [...new Set([...visible, ...dirty])].map((scene) => {
+      const bounds = scene.root.getBoundingClientRect();
+      const progressForScene = scene.isService ? serviceProgress : sceneProgress;
+      const progress = scene.root === hero
+        ? travelProgress(bounds.top, travel, headerHeight)
+        : progressForScene(bounds.top, bounds.height, viewport, headerHeight);
+      const closest = scene.points.map((point) => {
+        const bounds = point.getBoundingClientRect();
+        return { id: point.dataset.layerDescription, distance: Math.abs(bounds.top + bounds.height / 2 - viewport * .56) };
+      }).sort((a, b) => a.distance - b.distance)[0];
+      return { scene, progress, focus: scene.hovered ?? closest?.id };
+    });
+    dirty.clear();
+    for (const { scene, progress, focus } of positions) {
+      for (const track of scene.tracks) {
+        const time = stageProgress(progress, track.start, track.end) * 1000;
+        if (track.animation.currentTime !== time) track.animation.currentTime = time;
+      }
+      if (focus && scene.root.dataset.focus !== focus) scene.root.dataset.focus = focus;
+      if (!scene.root.dataset.motionReady) scene.root.dataset.motionReady = "true";
+    }
+  }
+
+  function stop() {
+    cancelAnimationFrame(frame);
+    frame = 0;
+    listeners?.abort();
+    observer?.disconnect();
+    resizeObserver?.disconnect();
+    visible.clear();
+    dirty.clear();
+    for (const scene of records.values()) {
+      for (const track of scene.tracks) track.animation.cancel();
+      delete scene.root.dataset.motionReady;
+      delete scene.root.dataset.focus;
+    }
+    records.clear();
+    delete hero.dataset.pinned;
+    for (const property of ["--hero-top", "--hero-height", "--hero-travel"]) hero.style.removeProperty(property);
+    geometry = undefined;
+    initialFragment = undefined;
+  }
+
+  function start() {
+    const firstVisit = firstStart;
+    firstStart = false;
+    stop();
+    // Static outcomes are the default, including on browsers without the enhancement APIs.
+    if (motionPreference.matches || !("IntersectionObserver" in window) || !("ResizeObserver" in window) || !Element.prototype.animate) return;
+    listeners = new AbortController();
+    const { signal } = listeners;
+    layoutDirty = true;
+    const navigation = performance.getEntriesByType("navigation")[0];
+    // Reload and back/forward navigation retain the browser's saved reading position.
+    if (firstVisit && window.location.hash && (!navigation || ("type" in navigation && navigation.type === "navigate"))) {
+      initialFragment = window.location.hash;
+      const cancelAlignment = () => { initialFragment = undefined; };
+      for (const event of ["wheel", "touchstart", "pointerdown", "keydown"]) {
+        window.addEventListener(event, cancelAlignment, { once: true, passive: true, signal });
+      }
+    }
+    for (const root of roots) {
+      const scene = createScene(root);
+      dirty.add(scene);
+      for (const point of scene.points) {
+        point.addEventListener("pointerenter", () => {
+          if (pointerPreference.matches) {
+            scene.hovered = point.dataset.layerDescription ?? null;
+            dirty.add(scene);
+            schedule();
+          }
+        }, { signal });
+        point.addEventListener("pointerleave", () => {
+          scene.hovered = null;
+          dirty.add(scene);
+          schedule();
+        }, { signal });
+      }
+    }
+    observer = new IntersectionObserver((entries) => {
+      if (signal.aborted) return;
+      for (const entry of entries) {
+        if (entry.target instanceof HTMLElement) {
+          const scene = records.get(entry.target);
+          if (!scene) throw new Error("An observed page story is not registered.");
+          if (entry.isIntersecting) visible.add(scene);
+          else visible.delete(scene);
+          dirty.add(scene);
+        }
+      }
+      schedule();
+    }, { rootMargin: "160px" });
+    resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(header);
+    resizeObserver.observe(heroStage);
+    for (const root of roots) {
+      observer.observe(root);
+      if (root !== hero) resizeObserver.observe(root);
+    }
+    window.addEventListener("scroll", schedule, { passive: true, signal });
+    window.addEventListener("resize", measure, { passive: true, signal });
+    window.addEventListener("load", measure, { once: true, signal });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      } else measure();
+    }, { signal });
+    pointerPreference.addEventListener("change", () => {
+      for (const scene of records.values()) {
+        scene.hovered = null;
+        dirty.add(scene);
+      }
+      schedule();
+    }, { signal });
+    schedule();
+  }
+
+  start();
+  motionPreference.addEventListener("change", start);
+  window.addEventListener("pagehide", stop);
+  window.addEventListener("pageshow", (event) => { if (event.persisted) start(); });
+</script>

@@ -1,0 +1,20 @@
+---
+import WorkExamples from "./WorkExamples.astro";
+import { siteContent } from "../content/site";
+const { services, proof } = siteContent;
+---
+
+<div class="container">
+  <aside class="proof-band" aria-label="Government of Alberta experience">
+    <div class="proof-copy"><p>{proof.heading}</p><span>{proof.description}</span></div>
+    {proof.verifiedOutcome && <p class="proof-outcome"><strong>{proof.verifiedOutcome.value}</strong>{proof.verifiedOutcome.context}</p>}
+  </aside>
+</div>
+
+<section class="services-section" id="services" aria-labelledby="services-heading">
+  <div class="container services-intro">
+    <h2 id="services-heading">{services.heading[0]}<br />{services.heading[1]}</h2>
+    <p class="section-description">{services.description}</p>
+  </div>
+  <WorkExamples />
+</section>

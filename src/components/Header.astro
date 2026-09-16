@@ -1,0 +1,72 @@
+---
+import Brand from "./Brand.astro";
+import Icon from "./Icon.astro";
+import { siteContent } from "../content/site";
+
+interface Props {
+  isHome?: boolean;
+}
+const { isHome = true } = Astro.props;
+const anchor = (href: string) => (isHome ? href : `/${href}`);
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <Brand />
+    <nav class="desktop-nav" aria-label="Main navigation">
+      {siteContent.navigation.map((item) => <a href={anchor(item.href)}>{item.label}</a>)}
+    </nav>
+    <a class="button button--small header-cta" href={anchor("#contact")}>
+      {siteContent.primaryAction}<Icon name="diagonal" size={16} />
+    </a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-navigation" aria-label="Open navigation">
+      <Icon name="menu" />
+    </button>
+  </div>
+  <nav id="mobile-navigation" class="mobile-nav" aria-label="Mobile navigation" hidden>
+    {siteContent.navigation.map((item) => <a href={anchor(item.href)}>{item.label}</a>)}
+    <a href={anchor("#contact")}>{siteContent.primaryAction}<Icon name="diagonal" size={18} /></a>
+  </nav>
+  <noscript>
+    <nav class="mobile-nav mobile-nav-fallback" aria-label="Mobile navigation">
+      {siteContent.navigation.map((item) => <a href={anchor(item.href)}>{item.label}</a>)}
+      <a href={anchor("#contact")}>{siteContent.primaryAction}</a>
+    </nav>
+  </noscript>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
+  const navigation = document.querySelector<HTMLElement>("#mobile-navigation");
+
+  if (toggle && navigation) {
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+      navigation.hidden = !open;
+    };
+    toggle.addEventListener("click", () => setOpen(toggle.getAttribute("aria-expanded") !== "true"));
+    navigation.addEventListener("click", (event) => {
+      const link = event.target instanceof Element ? event.target.closest("a") : null;
+      if (!link) return;
+      setOpen(false);
+      const destination = new URL(link.href);
+      if (destination.pathname === window.location.pathname && destination.hash) {
+        const target = document.getElementById(destination.hash.slice(1));
+        if (target) {
+          target.tabIndex = -1;
+          target.focus({ preventScroll: true });
+        }
+      }
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    window.matchMedia("(min-width: 1081px)").addEventListener("change", (event) => {
+      if (event.matches) setOpen(false);
+    });
+  }
+</script>

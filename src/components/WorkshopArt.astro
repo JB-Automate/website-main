@@ -1,0 +1,101 @@
+---
+interface Props {
+  kind: "bench" | "papers" | "route" | "website" | "boundary" | "thread";
+  class?: string;
+}
+const { kind, class: className } = Astro.props;
+---
+
+{kind === "bench" && (
+  <svg class:list={["workshop-art bench-art", className]} viewBox="0 0 1060 350" fill="none" aria-hidden="true">
+    <path class="art-guide" d="M64 191C41 115 144 55 255 99s97 187 219 208 176-31 276-31 176 18 213-44" />
+    <path class="art-guide" d="M798 29c78 25 124 92 108 149s-84 93-125 72" />
+    <g data-motion="tray">
+      <path d="m381 271 229-44 117 72-236 42Z" fill="#E3EAF7" />
+      <path d="m381 271 110 70v8l-110-70Z" fill="#C5D1EB" />
+      <path d="m491 341 236-42v8l-236 42Z" fill="#B3C3E5" />
+      <path d="m610 237 97 59-61 11" stroke="#8DA5D3" stroke-width="1.3" />
+    </g>
+    <path class="art-flow" data-draw pathLength="1" d="M89 223c-39-71 13-129 82-111s53 124 132 139 81-54 118-70" />
+    <path class="art-flow" data-draw pathLength="1" data-draw-start=".18" d="M913 104c39-71-108-105-139-37s80 104 40 155-123 32-168 0" />
+  </svg>
+)}
+
+{kind === "papers" && (
+  <svg class:list={["workshop-art papers-art", className]} viewBox="0 0 600 480" fill="none" aria-hidden="true">
+    <g data-motion="app-backing">
+      <path d="m105 124 423-30 24 349-423 30Z" fill="#E5E9E2" stroke="#C1CCC4" stroke-width="1.3" />
+      <path d="m114 445 398-27" stroke="#BDC7BD" stroke-width="1.2" />
+    </g>
+    <path class="art-guide" d="M18 257c-16 48 48 67 64 33s-25-39-33-19 27 57 68 57" />
+    <path class="art-flow" data-draw pathLength="1" d="M478 25c57-10 98 28 81 80s-53 31-62 8 35-50 55-22 35 84-2 116" />
+  </svg>
+)}
+
+{kind === "route" && (
+  <svg class:list={["workshop-art route-art", className]} viewBox="0 0 600 425" fill="none" preserveAspectRatio="none" aria-hidden="true">
+    <path class="route-detour" data-motion="route-detour" d="M112 103c89-138 342-86 323 37s-312 15-380 89 68 149 173 131 52-125 4-127-72 75 53 138 286-17 272-122-101-67-62-147" />
+    <path class="route-direct" data-draw pathLength="1" data-draw-start=".05" data-draw-end=".58" d="M113 155v62q0 65 71 65h51m-12-10 12 10-12 10" />
+    <path class="route-direct" data-draw pathLength="1" data-draw-start=".35" data-draw-end=".9" d="M367 282h63q68 0 68-64v-53m-10 12 10-12 10 12" />
+  </svg>
+)}
+
+{kind === "website" && (
+  <svg class:list={["workshop-art website-art", className]} viewBox="0 0 320 350" fill="none" aria-hidden="true">
+    <g data-motion="site-fold-one">
+      <g class="fold-one">
+        <path d="m22 213 146-125 14 157-96 91Z" class="fold-light" />
+        <path d="m168 88 48 32-34 125Z" class="fold-dark" />
+        <path d="m22 213 64 123 19-142Z" class="fold-mid" />
+        <path d="m105 194 63-106" class="fold-crease" />
+      </g>
+    </g>
+    <g data-motion="site-fold-two">
+      <g class="fold-two">
+        <path d="m105 194 42-156 143 47-74 137Z" class="fold-light" />
+        <path d="m147 38 29 130 114-83Z" class="fold-mid" />
+        <path d="m176 168 40 54 74-137Z" class="fold-dark" />
+        <path d="m147 38 29 130-71 26" class="fold-crease" />
+      </g>
+    </g>
+    <path d="m134 323 132-69" stroke="currentColor" stroke-width="1.4" opacity=".4" />
+  </svg>
+)}
+
+{kind === "boundary" && (
+  <svg class:list={["workshop-art boundary-art", className]} viewBox="0 0 570 390" fill="none" aria-hidden="true">
+    <g data-motion="boundary-base">
+    <g class="boundary-layer boundary-data">
+      <path d="m93 161 203-102 190 93-203 109Z" fill="#273D50" stroke="#8AA5BC" stroke-width="1.6" />
+      <path d="m93 161 190 100v51L93 212Z" fill="#233648" stroke="#8AA5BC" stroke-width="1.6" />
+      <path d="m283 261 203-109v49L283 312Z" fill="#1B2D40" stroke="#8AA5BC" stroke-width="1.6" />
+      <path d="m205 145 86-44 83 40-88 48Z" fill="#D4E1EC" />
+      <path d="m243 142 45-23m-26 34 46-23" stroke="#5A7590" stroke-width="2" />
+    </g>
+    </g>
+    <g class="boundary-layer boundary-access">
+      <path data-draw pathLength="1" d="M134 184V95l153-77 156 77v88" stroke="#99B0F4" stroke-width="3" stroke-linecap="round" />
+      <path d="m287 18 1 86" stroke="#99B0F4" stroke-width="1.5" opacity=".5" />
+      <path d="m134 95 76 37m157 0 76-37" stroke="#99B0F4" stroke-width="1.5" opacity=".5" />
+    </g>
+    <g class="boundary-layer boundary-support">
+      <path data-draw pathLength="1" d="M484 261c53 18 51 43 10 62l-122 58c-40 19-110-1-145-19L65 279c-51-26-44-48-7-64" stroke="#DCA787" stroke-width="2.5" stroke-linecap="round" />
+      <path d="m44 212 14 3-3 16" stroke="#DCA787" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+  </svg>
+)}
+
+{kind === "thread" && (
+  <svg class:list={["story-thread thread-wide", className]} viewBox="0 0 1200 120" fill="none" preserveAspectRatio="none" aria-hidden="true">
+    <path class="thread-base" d="M4 89C156 10 234 103 399 58S666 4 807 56s246 50 378-21" />
+    <path class="thread-ink" data-draw pathLength="1" d="M4 89C156 10 234 103 399 58S666 4 807 56s246 50 378-21" />
+    <path d="m1161 27 24 8-9 23" class="thread-arrow" />
+  </svg>
+)}
+
+{kind === "thread" && (
+  <svg class:list={["story-thread thread-mobile", className]} viewBox="0 0 40 600" fill="none" preserveAspectRatio="none" aria-hidden="true">
+    <path class="thread-base" d="M21 3c-40 92 36 117 0 196s35 132 0 206-14 148 0 190" />
+    <path class="thread-ink" data-draw pathLength="1" d="M21 3c-40 92 36 117 0 196s35 132 0 206-14 148 0 190" />
+  </svg>
+)}

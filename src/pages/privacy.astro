@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Icon from "../components/Icon.astro";
+import { siteContent } from "../content/site";
+import { siteConfig } from "../lib/site-config";
+---
+
+<BaseLayout title="Privacy | JB Automate" description="How JB Automate handles information submitted through this website." isHome={false}>
+  <article class="privacy-page container">
+    <a href="/" class="text-link privacy-back"><Icon name="arrow" size={17} />Back to the website</a>
+    <h1>Privacy, in plain language.</h1>
+    <p class="privacy-lead">This notice covers the <span class="wordmark">JB Automate</span> website and its enquiry form, not the separate data arrangements for client projects.</p>
+    {siteConfig.isPreview && <aside class="privacy-draft"><strong>Draft notice for this design preview.</strong><p>Sending is not enabled. Retention details and this notice must be finalized before accepting live enquiries.</p></aside>}
+    <section><h2>What the enquiry form collects</h2><p>Your name, email address, optional business name, and the message you choose to send. Please provide only a high-level description. Do not submit confidential business information, protected datasets, or personal records.</p></section>
+    <section><h2>Why we use it</h2><p>We use enquiry details to understand the request, respond, and arrange a conversation about a potential engagement. The form does not subscribe you to marketing emails.</p></section>
+    <section><h2>Where it goes</h2><p>When sending is enabled, Vercel hosts the site and processes the form request. Resend delivers the enquiry to our business mailbox. These providers and the receiving mailbox provider may process personal information and retain operational or delivery records.</p><p>There is no customer account or application database on this site. That does not mean no storage: submitted messages remain in our mailbox, and service providers may retain records under their own arrangements.</p></section>
+    <section><h2>Retention and deletion</h2><p>{siteContent.privacy.retention}</p></section>
+    <section><h2>Cookies, fonts, and analytics</h2><p>The site does not intentionally set analytics or advertising cookies, include tracking scripts, or embed third-party calendars. Fonts and visual assets are served with the website. Hosting providers may collect technical information needed to operate and protect the service.</p></section>
+    <section><h2>Security and client projects</h2><p>The public enquiry form is not a channel for protected business data. Project-specific access controls, processing arrangements, provider choices, and support responsibilities are discussed separately before sensitive information is used.</p><p>We limit information requested by the form and use appropriate transport and submission protections, but do not promise that any internet service is free from risk.</p></section>
+    <section><h2>Questions about your information</h2><p>Contact <span class="wordmark">JB Automate</span> using {siteConfig.hasPublicEmail ? <a href={siteConfig.emailHref}>{siteConfig.email}</a> : <span>the business email address that will be supplied before this site is published</span>} to ask about an enquiry or request deletion. We will explain any applicable limitations.</p></section>
+    <a href="/#contact" class="button button--primary">Back to the conversation<Icon name="diagonal" size={17} /></a>
+  </article>
+</BaseLayout>

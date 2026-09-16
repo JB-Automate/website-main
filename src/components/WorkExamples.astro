@@ -1,0 +1,76 @@
+---
+import Icon from "./Icon.astro";
+import WorkshopArt from "./WorkshopArt.astro";
+import { siteContent } from "../content/site";
+const { services, work } = siteContent;
+---
+
+<div class="work-stories" id="work">
+  {services.items.map((service) => (
+    <article class:list={["service-chapter", `chapter-${service.id}`]} id={`service-${service.id}`} aria-labelledby={`service-title-${service.id}`}>
+      <div class="container chapter-layout">
+        <div class="service-copy">
+          <h3 id={`service-title-${service.id}`}>{service.title[0]}<br />{service.title[1]}</h3>
+          <p>{service.description}</p>
+          <a href="#contact" class="text-link">{service.action}<Icon name="arrow" size={22} /></a>
+        </div>
+
+        {service.id === "apps" && (
+          <figure class="service-art app-scene" data-scroll-scene="apps">
+            <div class="app-scene-stage">
+              <WorkshopArt kind="papers" />
+              <div class="task-slip" data-motion="app-input">
+                <p>{work.task.label}.</p>
+                <div class="task-sources"><span>Meeting notes</span><span>Project context</span></div>
+              </div>
+              <div class="brief-paper" data-motion="app-output">
+                <div class="brief-heading"><span>Follow-up</span><Icon name="diagonal" size={22} /></div>
+                <h4>{work.task.heading}</h4>
+                <ul role="list">
+                  {work.task.lines.map((line) => (
+                    <li><svg width="19" height="19" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m3 10 4 4L17 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg><span>{line}</span></li>
+                  ))}
+                </ul>
+                <p class="review-note">Ready for your review.</p>
+              </div>
+            </div>
+            <figcaption class="scene-caption"><span>{service.label}</span><span>{work.label}</span></figcaption>
+          </figure>
+        )}
+
+        {service.id === "workflows" && (
+          <figure class="service-art workflow-scene" data-scroll-scene="workflows">
+            <div class="workflow-stage">
+              <WorkshopArt kind="route" />
+              <ol class="route-steps" role="list">
+                <li class="route-card route-request" data-motion="route-request"><span aria-hidden="true">01</span><strong>Request<br />arrives.</strong></li>
+                <li class="route-card route-prepare" data-motion="route-prepare"><span aria-hidden="true">02</span><strong>Brief<br />prepared.</strong></li>
+                <li class="route-card route-review" data-motion="route-review"><span aria-hidden="true">03</span><strong>You<br />decide.</strong></li>
+              </ol>
+            </div>
+            <figcaption class="scene-caption"><span>{service.label}</span><span>{work.label}</span></figcaption>
+          </figure>
+        )}
+
+        {service.id === "websites" && (
+          <figure class="service-art website-scene" data-scroll-scene="websites">
+            <div class="website-stage">
+              <div class="website-preview" data-motion="site-frame">
+                <div class="website-name"><span>Your business.</span><svg width="25" height="25" viewBox="0 0 25 25" fill="none" aria-hidden="true"><path d="M4 5h17M4 12h17M4 19h10" stroke="currentColor" stroke-width="1.5" /></svg></div>
+                <div class="website-composition">
+                  <div class="website-copy" data-motion="site-type"><h4>Good work.<br />Well presented.</h4><p>Make it unmistakably yours.</p></div>
+                  <WorkshopArt kind="website" />
+                </div>
+                <div class="website-rule" aria-hidden="true"></div>
+              </div>
+            </div>
+            <figcaption class="scene-caption"><span>{service.label}</span><span>{work.label}</span></figcaption>
+          </figure>
+        )}
+      </div>
+    </article>
+  ))}
+  <div class="container">
+    <p class="example-note">{work.note}</p>
+  </div>
+</div>

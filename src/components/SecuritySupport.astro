@@ -1,0 +1,26 @@
+---
+import WorkshopArt from "./WorkshopArt.astro";
+import { siteContent } from "../content/site";
+const { security } = siteContent;
+---
+
+<section class="security-section" id="security" aria-labelledby="security-heading" data-scroll-scene="security">
+  <div class="container">
+    <div class="security-intro">
+      <h2 id="security-heading">{security.heading[0]}<br />{security.heading[1]}</h2>
+      <p>{security.description}</p>
+    </div>
+    <div class="security-body">
+      <div class="responsibility-illustration" aria-hidden="true"><WorkshopArt kind="boundary" /></div>
+      <div class="security-points">
+        {security.items.map((item) => (
+          <article data-layer-description={item.id}>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+    <p class="security-note">{security.note}</p>
+  </div>
+</section>

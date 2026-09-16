@@ -1,0 +1,15 @@
+---
+import { siteContent } from "../content/site";
+import WorkshopArt from "./WorkshopArt.astro";
+const { process } = siteContent;
+---
+
+<section class="section container process-section" aria-labelledby="process-heading" data-scroll-scene="process">
+  <h2 id="process-heading">{process.heading}</h2>
+  <div class="process-journey">
+    <WorkshopArt kind="thread" />
+    <ol class="process-grid">
+      {process.steps.map((step, index) => <li><span class="process-number" aria-hidden="true">0{index + 1}</span><h3>{step.title}</h3><p>{step.description}</p></li>)}
+    </ol>
+  </div>
+</section>

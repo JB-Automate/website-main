@@ -1,0 +1,19 @@
+---
+import ContactForm from "./ContactForm.astro";
+import Icon from "./Icon.astro";
+import { siteContent } from "../content/site";
+import { siteConfig } from "../lib/site-config";
+const { contact } = siteContent;
+---
+
+<section class="contact-section container" id="contact" aria-labelledby="contact-heading">
+  <div class="contact-panel">
+    <div class="contact-intro">
+      <h2 id="contact-heading">{contact.heading[0]}<br />{contact.heading[1]}</h2>
+      <p class="contact-description">{contact.description}</p>
+      <p class="contact-next">{contact.nextStep}</p>
+      <div class="contact-email">{siteConfig.hasPublicEmail ? <a href={siteConfig.emailHref}>{siteConfig.email}<Icon name="diagonal" size={22} /></a> : <><span class="placeholder-email">{siteConfig.email}</span><small>Preview address. Replace before publishing.</small></>}</div>
+    </div>
+    <ContactForm />
+  </div>
+</section>

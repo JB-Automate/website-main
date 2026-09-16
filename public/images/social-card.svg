@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f8f7f2"/>
+  <g transform="translate(76 56) scale(.0744)" fill="#3558c9">
+    <path fill-rule="evenodd" d="M222 162.5c0 89.4.2 162.5.4 162.5.5 0 33.5-55.2 80.5-134.2l27.1-45.7V0H222zM433.2 33.3a53980 53980 0 0 0-118.7 199.2c-36 59.7-93.4 156.5-94 158.5-2.3 7.4-8.2 17-14.4 23a57.5 57.5 0 0 1-97.3-30.2l-1.3-7.8H-.3l.6 10.3c2 32.7 15.3 65.3 37.3 91.8a158 158 0 0 0 52.9 41.4 154 154 0 0 0 74.5 17.8c18 0 29.5-1.5 44.5-5.8 44.7-12.9 80-41.2 103.2-83L395.1 304l94.6-166 18-31.5 63.1-.3c69.5-.2 71.4-.1 83.9 5.7a52 52 0 0 1 21.2 20 68 68 0 0 1 7.1 29.5 52 52 0 0 1-42.4 52.5c-3.9.7-32.5 1.1-82.2 1.1h-76.2l-16.5 28.8-113 197.2a5272 5272 0 0 0-54.2 95.3c-.7 1.6 7.9 1.7 171.1 1.7 110 0 176.2-.4 183.9-1 24.1-2.1 44.4-7.5 64.1-17a147 147 0 0 0 63.1-58c23-40.2 25.7-93.9 6.8-133.8-6-12.8-12.3-21.8-22.3-32.3q-14.4-15.1-31.6-25a42 42 0 0 1-7.5-4.8 40 40 0 0 1 7-5.1c9.1-5.8 24.2-20 31.4-29.6 29.2-38.7 33.6-98.6 10.9-147.3-18.3-39.3-57-69-103.9-79.7C653.1.2 647.5 0 548.3 0H453zm93 295.5c-5 8.5-55.4 97-57 100l-1.2 2.3 89.8-.3 89.8-.3 6.6-2.2a52 52 0 0 0 34.4-36.8 66 66 0 0 0 0-28 51 51 0 0 0-39.1-39.5c-7.2-1.9-11.2-2-63.5-2h-56z"/>
+  </g>
+  <text x="150" y="87" font-family="&quot;Kode Mono Variable&quot;,ui-monospace,Consolas,monospace" font-weight="700" font-size="30" fill="#202b35">Automate</text>
+  <text x="76" y="268" font-family="&quot;Manrope Variable&quot;,Arial,sans-serif" font-weight="700" font-size="88" letter-spacing="-4" fill="#202b35">Put AI to work.</text>
+  <text x="76" y="372" font-family="&quot;Manrope Variable&quot;,Arial,sans-serif" font-weight="700" font-size="88" letter-spacing="-4" fill="#3558c9">On your terms.</text>
+  <path d="M810 215c-87-81-138 116-33 123s68-52 135-36 103 99 51 151" fill="none" stroke="#3558c9" stroke-width="3"/>
+  <path d="m1007 370 88-27 64 55-87 30Z" fill="#4261d5"/>
+  <path d="m1007 370 65 58v46l-65-59Z" fill="#2945b8"/>
+  <path d="m1072 428 87-30v45l-87 31Z" fill="#183591"/>
+  <g transform="rotate(-12 876 262)">
+    <rect x="801" y="179" width="150" height="181" rx="3" fill="#fffdfa" stroke="#bac7d2"/>
+    <path d="M821 213h96m-96 22h78m-78 22h103m-103 22h63" fill="none" stroke="#96a7b6" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <g transform="rotate(-7 866 414)">
+    <rect x="805" y="348" width="144" height="149" rx="3" fill="#edc8ad" stroke="#d3ab8c"/>
+    <path d="M825 380c16-15 23 12 45-2s32 10 56-1m-101 31c32-12 60 12 95-5m-93 34h65" fill="none" stroke="#9d7255" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <g transform="rotate(4 1015 329)">
+    <rect x="919" y="215" width="189" height="238" rx="3" fill="#fffdf8" stroke="#bac7d2"/>
+    <path d="M1082 215v27h26" fill="#e5eaf0"/>
+    <path d="M944 204v-19c0-14 19-14 19 0v39c0 16-25 16-25 0v-31c0-8 12-8 12 0v31" fill="none" stroke="#748290" stroke-width="3" stroke-linecap="round"/>
+    <path d="M948 269h122m-122 28h99" fill="none" stroke="#365571" stroke-width="5" stroke-linecap="round"/>
+    <path d="M948 339h111m-111 20h84" fill="none" stroke="#96a7b6" stroke-width="3" stroke-linecap="round"/>
+    <path d="M943 402c35-13 66-12 106-5m-99 16c36-11 52-10 88-7" fill="none" stroke="#3558c9" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+</svg>

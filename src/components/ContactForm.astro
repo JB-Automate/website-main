@@ -1,0 +1,294 @@
+---
+import { getContactConfig } from "../lib/contact-config.ts";
+import { CONTACT_LIMITS, mailtoHref } from "../lib/contact-validation.ts";
+
+const config = getContactConfig({
+  SITE_MODE: process.env.SITE_MODE ?? import.meta.env.SITE_MODE,
+  PUBLIC_SITE_URL: process.env.PUBLIC_SITE_URL ?? import.meta.env.PUBLIC_SITE_URL,
+  PUBLIC_CONTACT_EMAIL: process.env.PUBLIC_CONTACT_EMAIL ?? import.meta.env.PUBLIC_CONTACT_EMAIL,
+  RESEND_API_KEY: process.env.RESEND_API_KEY ?? import.meta.env.RESEND_API_KEY,
+  CONTACT_FROM_EMAIL: process.env.CONTACT_FROM_EMAIL ?? import.meta.env.CONTACT_FROM_EMAIL,
+  CONTACT_TO_EMAIL: process.env.CONTACT_TO_EMAIL ?? import.meta.env.CONTACT_TO_EMAIL,
+  CONTACT_RATE_LIMIT_CONFIGURED: process.env.CONTACT_RATE_LIMIT_CONFIGURED ?? import.meta.env.CONTACT_RATE_LIMIT_CONFIGURED,
+});
+---
+
+<form
+  id="enquiry-form"
+  class="contact-form"
+  action="/api/contact"
+  method="post"
+  accept-charset="UTF-8"
+  aria-label="Enquiry form"
+  data-contact-available={String(config.available)}
+>
+  <div class="form-row">
+    <div class="form-field">
+      <label for="enquiry-name">Your name</label>
+      <input
+        id="enquiry-name"
+        name="name"
+        type="text"
+        autocomplete="name"
+        required
+        maxlength={CONTACT_LIMITS.name}
+        aria-describedby="enquiry-name-error"
+      />
+      <p class="field-error" id="enquiry-name-error" hidden></p>
+    </div>
+    <div class="form-field">
+      <label for="enquiry-email">Email address</label>
+      <input
+        id="enquiry-email"
+        name="email"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        spellcheck="false"
+        required
+        maxlength={CONTACT_LIMITS.email}
+        aria-describedby="enquiry-email-error"
+      />
+      <p class="field-error" id="enquiry-email-error" hidden></p>
+    </div>
+  </div>
+  <div class="form-field">
+    <label for="enquiry-company">Business name (optional)</label>
+    <input
+      id="enquiry-company"
+      name="company"
+      type="text"
+      autocomplete="organization"
+      maxlength={CONTACT_LIMITS.company}
+      aria-describedby="enquiry-company-error"
+    />
+    <p class="field-error" id="enquiry-company-error" hidden></p>
+  </div>
+  <div class="form-field">
+    <label for="enquiry-message">What would you like to make easier or build?</label>
+    <textarea
+      id="enquiry-message"
+      name="message"
+      rows="4"
+      required
+      maxlength={CONTACT_LIMITS.message}
+      placeholder="For example, we spend too much time moving information between systems."
+      aria-describedby="enquiry-information enquiry-message-error"
+    ></textarea>
+    <p class="field-error" id="enquiry-message-error" hidden></p>
+  </div>
+
+  <div class="contact-honeypot" aria-hidden="true">
+    <label for="enquiry-website">Leave this field blank</label>
+    <input id="enquiry-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <p class="form-note" id="enquiry-information">
+    Share a high-level summary. Please do not include confidential business information or personal records.
+    {" "}<a href="/privacy/">Read our privacy notice.</a>
+  </p>
+
+  {!config.available && (
+    <p class="form-notice" id="enquiry-unavailable">Preview only — enquiry sending is unavailable.</p>
+  )}
+
+  <button
+    class="button button--primary form-submit"
+    type="submit"
+    disabled={!config.available}
+    aria-describedby={!config.available ? "enquiry-unavailable" : undefined}
+  >
+    <span data-submit-label>Send your enquiry</span>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <path d="M5 12h14m-6-6 6 6-6 6"></path>
+    </svg>
+  </button>
+
+  <p class="form-status" id="enquiry-status" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
+  <p class="form-note" id="enquiry-email-guidance" hidden>
+    {config.publicEmail ? (
+      <>You can also email <a href={mailtoHref(config.publicEmail)}>{config.publicEmail}</a>.</>
+    ) : (
+      <>A direct email option will appear here when contact details are available.</>
+    )}
+  </p>
+</form>
+
+<style>
+  .contact-honeypot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>
+
+<script>
+  import { CONTACT_FIELD_NAMES, validateContactInput } from "../lib/contact-validation.ts";
+  import type { ContactFieldErrors, ContactFieldName } from "../lib/contact-validation.ts";
+
+  function enhanceEnquiryForm() {
+    const form = document.querySelector<HTMLFormElement>("#enquiry-form");
+    const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const buttonLabel = button?.querySelector<HTMLElement>("[data-submit-label]");
+    const status = form?.querySelector<HTMLElement>("#enquiry-status");
+    const emailGuidance = form?.querySelector<HTMLElement>("#enquiry-email-guidance");
+    const honeypot = form?.querySelector<HTMLInputElement>("#enquiry-website");
+    if (!form || !button || !buttonLabel || !status || !emailGuidance || !honeypot) return;
+
+    const fields = {} as Record<ContactFieldName, HTMLInputElement | HTMLTextAreaElement>;
+    const errorNodes = {} as Record<ContactFieldName, HTMLElement>;
+    for (const name of CONTACT_FIELD_NAMES) {
+      const field = form.elements.namedItem(name);
+      const errorNode = document.getElementById(`enquiry-${name}-error`);
+      if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement) || !errorNode) return;
+      fields[name] = field;
+      errorNodes[name] = errorNode;
+    }
+
+    const available = form.dataset.contactAvailable === "true";
+    let pending = false;
+    form.noValidate = true;
+
+    function showErrors(errors: ContactFieldErrors = {}) {
+      for (const name of CONTACT_FIELD_NAMES) {
+        errorNodes[name].textContent = errors[name] ?? "";
+        errorNodes[name].hidden = !errors[name];
+        if (errors[name]) fields[name].setAttribute("aria-invalid", "true");
+        else fields[name].removeAttribute("aria-invalid");
+      }
+      const first = CONTACT_FIELD_NAMES.find((name) => errors[name]);
+      return first ? fields[first] : undefined;
+    }
+
+    function announce(message: string, failed = false, focus = true) {
+      status!.textContent = message;
+      status!.dataset.state = failed ? "error" : "status";
+      emailGuidance!.hidden = !failed;
+      if (focus) status!.focus();
+    }
+
+    function setPending(value: boolean) {
+      pending = value;
+      button!.disabled = value || !available;
+      button!.setAttribute("aria-busy", String(value));
+      buttonLabel!.textContent = value ? "Sending your enquiry…" : "Send your enquiry";
+      for (const name of CONTACT_FIELD_NAMES) fields[name].readOnly = value;
+    }
+
+    function failure() {
+      announce("We couldn’t confirm your enquiry was sent. Your details are still here; please try again or email us directly.", true);
+    }
+
+    function isRecord(value: unknown): value is Record<string, unknown> {
+      return value !== null && typeof value === "object" && !Array.isArray(value);
+    }
+
+    for (const name of CONTACT_FIELD_NAMES) {
+      fields[name].addEventListener("input", () => {
+        fields[name].removeAttribute("aria-invalid");
+        errorNodes[name].textContent = "";
+        errorNodes[name].hidden = true;
+        if (status.dataset.state === "success") {
+          status.textContent = "";
+          delete status.dataset.state;
+        }
+      });
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (pending) return;
+      if (!available) {
+        announce("Enquiry sending is unavailable in this preview. Please use the email option if one is listed.", true);
+        return;
+      }
+
+      showErrors();
+      const result = validateContactInput({
+        name: fields.name.value,
+        email: fields.email.value,
+        company: fields.company.value,
+        message: fields.message.value,
+        website: honeypot.value,
+      });
+      if (!result.ok) {
+        const first = result.reason === "invalid_fields" ? showErrors(result.errors) : undefined;
+        announce("Please check your details. Your enquiry has not been sent.", true, !first);
+        first?.focus();
+        return;
+      }
+
+      setPending(true);
+      announce("Sending your enquiry…", false, false);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15_000);
+      try {
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          mode: "same-origin",
+          credentials: "omit",
+          redirect: "error",
+          cache: "no-store",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ ...result.values, website: "" }),
+          signal: controller.signal,
+        });
+
+        if (response.status === 429) {
+          announce("Please wait a little before trying again, or email us directly. Your details are still here.", true);
+          return;
+        }
+        if (!/^application\/json(?:\s*;|$)/i.test(response.headers.get("content-type") ?? "")) {
+          failure();
+          return;
+        }
+        const payload: unknown = await response.json();
+        if (!isRecord(payload)) {
+          failure();
+          return;
+        }
+        if (response.status === 200 && payload.ok === true && typeof payload.message === "string") {
+          form.reset();
+          announce("Your enquiry has been sent. Thank you for getting in touch.");
+          status.dataset.state = "success";
+          return;
+        }
+
+        const errors: ContactFieldErrors = {};
+        if (payload.ok === false && isRecord(payload.errors)) {
+          for (const name of CONTACT_FIELD_NAMES) {
+            const error = payload.errors[name];
+            if (typeof error === "string" && error.length <= 200) errors[name] = error;
+          }
+        }
+        const first = showErrors(errors);
+        if (response.status === 422 && first) {
+          announce("Please check the highlighted fields. Your enquiry has not been sent.", true, false);
+          first.focus();
+        } else if (response.status === 503) {
+          announce("Enquiry sending is unavailable right now. Your details are still here; please use the email option if one is listed.", true);
+        } else {
+          failure();
+        }
+      } catch (error) {
+        if (
+          error instanceof TypeError ||
+          error instanceof SyntaxError ||
+          (error instanceof DOMException && (error.name === "AbortError" || error.name === "TimeoutError"))
+        ) {
+          failure();
+        } else {
+          throw error;
+        }
+      } finally {
+        clearTimeout(timeout);
+        setPending(false);
+      }
+    });
+  }
+
+  enhanceEnquiryForm();
+</script>
