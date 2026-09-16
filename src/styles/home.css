@@ -42,14 +42,16 @@
   .sheet-followup { right: auto; top: auto; background: #e3eaf7; border-color: #bdcbe2; transform: rotate(8deg); }
   .sheet-followup svg { color: #7d91b9; }
   .bench-result { position: absolute; z-index: 2; left: calc(50% - 143px); top: 37px; width: 286px; }
-  .ready-sheet { position: relative; left: auto; top: auto; width: 100%; min-height: 251px; padding: 31px 29px 25px; border: 1px solid #c6cec9; border-radius: 2px; background: #fffefb; box-shadow: 0 16px 28px #24374b15, 0 2px 4px #24374b08; transform: rotate(-2deg); transition: transform .55s var(--ease); }
-  .ready-sheet::after { content: ""; position: absolute; top: -1px; right: -1px; width: 25px; height: 25px; background: #e2e8ed; clip-path: polygon(0 0, 100% 100%, 0 100%); }
-  .paper-clip { position: absolute; left: 18px; top: -29px; width: 30px; height: 61px; }
+  .ready-sheet { position: relative; isolation: isolate; left: auto; top: auto; width: 100%; transform: rotate(-2deg); transition: transform .55s var(--ease); }
+  .ready-face { --dog-ear: 27px; --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)' opacity='.055'/%3E%3C/svg%3E"); position: relative; min-height: 251px; padding: 31px 29px 25px; border: 1px solid #ddd9cd; background: var(--paper-grain), linear-gradient(158deg, #ffffff 0%, #fefdf8 55%, #faf8f0 100%); box-shadow: inset 1px 1px 0 #ffffffb3; clip-path: polygon(0 0, calc(100% - var(--dog-ear)) 0, 100% var(--dog-ear), 100% 100%, 0 100%); filter: drop-shadow(1px 2px 1.5px #23374a1a) drop-shadow(3px 15px 18px #23374a22); }
+  .ready-fold { position: absolute; top: -1px; right: -1px; width: var(--dog-ear); height: var(--dog-ear); background: linear-gradient(225deg, #e4e0d1 0%, #eeeade 44%, #f8f5eb 100%); clip-path: polygon(0 0, 100% 100%, 0 100%); filter: drop-shadow(1px 1.5px 1.5px #2a3a4a26); }
+  .paper-clip { position: absolute; left: 12px; top: -36px; width: 35px; height: 80px; transform: rotate(-4deg); transform-origin: 50% 45%; }
+  .paper-clip--back { z-index: -1; }
+  .paper-clip--front { filter: drop-shadow(1.2px 2px 1.2px #24374b30); }
   .ready-title { font-size: 33px; line-height: 1.12; letter-spacing: -.046em; font-weight: 600; }
   .ready-description { margin-top: 16px; color: #536573; font-size: 16px; line-height: 1.65; }
-  .ready-signature { position: relative; width: fit-content; margin-top: 13px; padding-bottom: 6px; color: var(--blue); }
-  .ready-signature span { font-family: Georgia, "Times New Roman", serif; font-size: 27px; font-style: italic; }
-  .ready-signature svg { position: absolute; left: -10%; bottom: -7px; width: 130%; height: 29px; }
+  .ready-signature { margin-top: 15px; color: var(--blue); }
+  .ready-signature svg { width: min(174px, 100%); height: auto; aspect-ratio: 300 / 92; }
   .workbench-caption { display: block; margin-top: 0; padding-top: 6px; color: var(--muted); font-size: 14px; line-height: 1.7; text-align: center; }
 
   .proof-band { display: block; padding: 64px 20px 70px; border: 0; border-bottom: 1px solid var(--line); text-align: center; }
@@ -322,12 +324,12 @@
     .sheet-title { font-size: 16px; }
     .loose-sheet svg { height: 64px; }
     .bench-result { left: calc(50% - 85px); top: 91px; width: 228px; }
-    .ready-sheet { min-height: 241px; padding: 28px 22px 22px; }
+    .ready-face { --dog-ear: 23px; min-height: 241px; padding: 28px 22px 22px; }
     .ready-title { font-size: 30px; }
     .ready-description { max-width: 172px; margin-top: 16px; font-size: 16px; }
-    .ready-signature { margin-top: 12px; }
-    .ready-signature span { font-size: 26px; }
-    .paper-clip { top: -27px; width: 28px; height: 56px; }
+    .ready-signature { margin-top: 13px; }
+    .ready-signature svg { width: min(158px, 100%); }
+    .paper-clip { left: 9px; top: -31px; width: 30px; height: 68px; }
     .workbench-caption { font-size: 14px; }
     .proof-band { padding: 37px 0 42px; }
     .proof-copy > p { font-size: 24px; line-height: 1.5; }
@@ -419,7 +421,7 @@
     .workbench { width: calc(100% - 32px); }
     .bench-request, .bench-notes { left: 0; }
     .bench-result { left: 61px; width: 217px; }
-    .ready-sheet { padding-inline: 19px; }
+    .ready-face { padding-inline: 19px; }
     .ready-title { font-size: 29px; }
     .task-slip { width: 94%; padding: 17px; }
     .task-sources { gap: 4px 8px; }

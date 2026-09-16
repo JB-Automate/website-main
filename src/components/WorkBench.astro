@@ -25,13 +25,32 @@ import WorkshopArt from "./WorkshopArt.astro";
     </div>
     <div class="bench-result" data-motion="outcome">
       <div class="ready-sheet">
-        <svg class="paper-clip" viewBox="0 0 40 75" fill="none" aria-hidden="true"><path d="M11 46V15c0-17 22-17 22 0v44c0 18-29 18-29 0V20c0-9 14-9 14 0v38" stroke="#748290" stroke-width="3" stroke-linecap="round" /></svg>
-        <p class="ready-title">One clear<br />next step.</p>
-        <p class="ready-description">Prepared for your review.</p>
-        <div class="ready-signature">
-          <span>Your call.</span>
-          <svg viewBox="0 0 130 38" fill="none" aria-hidden="true"><path data-draw pathLength="1" data-draw-start=".6" d="M6 25c28-18 83-18 116-9M15 34c35-12 65-13 98-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+        <svg class="paper-clip paper-clip--back" viewBox="0 0 44 100" fill="none" aria-hidden="true">
+          <path d="M8 74V26a14 14 0 0 1 28 0v52" stroke="#8D98A2" stroke-width="2.9" stroke-linecap="round" />
+        </svg>
+        <div class="ready-face">
+          <p class="ready-title">One clear<br />next step.</p>
+          <p class="ready-description">Prepared for your review.</p>
+          <p class="ready-signature">
+            <span class="sr-only">Your call.</span>
+            <svg viewBox="8 2 300 92" fill="none" aria-hidden="true">
+              <path data-draw pathLength="1" data-draw-start=".4" data-draw-end=".82" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M15 13C20 29 31 45 47 55M74 11C66 27 54 43 47 55 40 68 31 78 22 74M103 38C99 31 87 29 81 37 75 45 78 59 87 60 95 61 102 53 101 44 100 39 99 37 104 35M112 34C110 44 108 53 111 57 115 61 121 55 124 45 126 39 127 36 128 33 127 43 125 52 127 57 129 61 134 61 139 55M145 58C147 48 149 39 150 33 151 41 154 44 159 43 163 42 165 39 168 35M212 40C208 32 196 30 190 38 184 47 187 58 196 59 202 59 206 56 208 52M238 39C233 32 221 32 217 41 213 50 217 60 225 59 232 58 236 50 237 41 237 37 237 35 237 33 236 43 235 53 238 58 240 61 243 60 246 58M256 58C256 44 258 25 262 14 264 8 269 9 267 18 265 28 261 45 260 53 259 58 261 60 264 58M270 58C270 44 272 25 276 14 278 8 283 9 281 18 279 28 275 45 274 53 273 58 276 61 281 57M291 56l1 2" />
+              <path data-draw pathLength="1" data-draw-start=".8" data-draw-end=".94" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" d="M24 87C76 78 148 74 216 76 254 77 282 81 300 86" />
+            </svg>
+          </p>
+          <span class="ready-fold" aria-hidden="true"></span>
         </div>
+        <svg class="paper-clip paper-clip--front" viewBox="0 0 44 100" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="clip-wire" x1="8" y1="10" x2="38" y2="86" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#C9D1D8" />
+              <stop offset=".34" stop-color="#74818D" />
+              <stop offset=".66" stop-color="#A5B0BA" />
+              <stop offset="1" stop-color="#616D79" />
+            </linearGradient>
+          </defs>
+          <path d="M15 82V26a7 7 0 0 1 14 0v56a3.5 3.5 0 0 0 7 0" stroke="url(#clip-wire)" stroke-width="3" stroke-linecap="round" />
+        </svg>
       </div>
     </div>
   </div>
