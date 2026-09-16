@@ -12,4 +12,4 @@ Before enabling either campaign:
 6. Set the campaign goal to the successful enquiry conversion. Form starts and CTA clicks are observation events only.
 7. Review search terms twice weekly and record qualified-lead outcomes outside the website.
 
-The C$60/C$40 daily split is a launch placeholder, not authorization to spend. Billing and campaign activation require explicit owner approval.
+The owner-approved starting limits are C$3/day for workflow automation and C$2/day for custom AI applications. Both campaigns still remain paused until the owner separately approves activation.

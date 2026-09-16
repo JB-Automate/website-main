@@ -27,6 +27,8 @@ test("the launch specification cannot accidentally create a live or non-Canadian
   assert.equal(launch.sharedSettings.network, "GOOGLE_SEARCH_ONLY");
   assert.equal(launch.sharedSettings.aiMax, false);
   assert.equal(launch.sharedSettings.finalUrlExpansion, false);
+  assert.deepEqual(launch.campaigns.map((campaign: { dailyBudgetCad: number }) => campaign.dailyBudgetCad), [3, 2]);
+  assert.equal(launch.campaigns.reduce((total: number, campaign: { dailyBudgetCad: number }) => total + campaign.dailyBudgetCad, 0), 5);
 });
 
 test("responsive search ad copy fits platform limits", () => {

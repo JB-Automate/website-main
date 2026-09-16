@@ -22,7 +22,7 @@
   "campaigns": [
     {
       "name": "AB | Search | Workflow Automation",
-      "dailyBudgetCad": 60,
+      "dailyBudgetCad": 3,
       "finalUrl": "https://jbautomate.ca/workflow-automation/",
       "adGroups": [
         {
@@ -106,7 +106,7 @@
     },
     {
       "name": "AB | Search | Custom AI Apps",
-      "dailyBudgetCad": 40,
+      "dailyBudgetCad": 2,
       "finalUrl": "https://jbautomate.ca/custom-ai-apps/",
       "adGroups": [
         {
