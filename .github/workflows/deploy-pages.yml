@@ -34,7 +34,12 @@ jobs:
         run: npm run build
         env:
           PUBLIC_SITE_URL: https://jbautomate.ca
-          SITE_MODE: preview
+          PUBLIC_CONTACT_EMAIL: admin@jbautomate.ca
+          SITE_MODE: production
+          # GitHub Pages serves static files only, so there is no delivery endpoint here.
+          # The form hands each enquiry to the visitor's own email application.
+          ENQUIRY_DELIVERY: email_app
+          PRIVACY_NOTICE_APPROVED: "true"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

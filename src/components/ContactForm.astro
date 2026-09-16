@@ -1,6 +1,7 @@
 ---
 import { getContactConfig } from "../lib/contact-config.ts";
-import { CONTACT_LIMITS, mailtoHref } from "../lib/contact-validation.ts";
+import { CONTACT_LIMITS } from "../lib/contact-validation.ts";
+import { siteConfig } from "../lib/site-config.ts";
 
 const config = getContactConfig({
   SITE_MODE: process.env.SITE_MODE ?? import.meta.env.SITE_MODE,
@@ -21,6 +22,7 @@ const config = getContactConfig({
   accept-charset="UTF-8"
   aria-label="Enquiry form"
   data-contact-available={String(config.available)}
+  data-contact-email={siteConfig.email}
 >
   <div class="form-row">
     <div class="form-field">
@@ -108,11 +110,7 @@ const config = getContactConfig({
   <p class="sr-only" id="enquiry-alert" role="alert" aria-live="assertive" aria-atomic="true"></p>
   <p class="form-status" id="enquiry-status" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
   <p class="form-note" id="enquiry-email-guidance" hidden>
-    {config.publicEmail ? (
-      <>You can also email <a href={mailtoHref(config.publicEmail)}>{config.publicEmail}</a>.</>
-    ) : (
-      <>A direct email option will appear here when contact details are available.</>
-    )}
+    You can also email <a href={siteConfig.emailHref}>{siteConfig.email}</a>.
   </p>
 </form>
 
@@ -128,8 +126,8 @@ const config = getContactConfig({
 </style>
 
 <script>
-  import { CONTACT_FIELD_NAMES, validateContactInput } from "../lib/contact-validation.ts";
-  import type { ContactFieldErrors, ContactFieldName } from "../lib/contact-validation.ts";
+  import { CONTACT_FIELD_NAMES, mailtoHref, validateContactInput } from "../lib/contact-validation.ts";
+  import type { ContactFieldErrors, ContactFieldName, Enquiry } from "../lib/contact-validation.ts";
 
   function enhanceEnquiryForm() {
     const form = document.querySelector<HTMLFormElement>("#enquiry-form");
@@ -205,7 +203,7 @@ const config = getContactConfig({
       if (value) {
         button!.dataset.state = "sending";
         buttonLabel!.textContent = "Sending your enquiry…";
-      } else if (button!.dataset.state !== "sent") {
+      } else if (button!.dataset.state === "sending") {
         delete button!.dataset.state;
         buttonLabel!.textContent = defaultLabel;
       }
@@ -217,9 +215,35 @@ const config = getContactConfig({
     }
 
     function clearSent() {
-      if (button!.dataset.state !== "sent") return;
+      if (!button!.dataset.state || button!.dataset.state === "sending") return;
       delete button!.dataset.state;
       buttonLabel!.textContent = defaultLabel;
+    }
+
+    /** Without a delivery endpoint the enquiry is handed to the visitor's own email app. */
+    function draftEmail(values: Enquiry): boolean {
+      const address = form!.dataset.contactEmail ?? "";
+      let href: string;
+      try {
+        href = mailtoHref(address);
+      } catch {
+        return false;
+      }
+      const body = [
+        `Name: ${values.name}`,
+        `Email: ${values.email}`,
+        `Business: ${values.company || "Not provided"}`,
+        "",
+        "What would you like to make easier or build?",
+        "",
+        values.message,
+      ].join("\n");
+      const query = new URLSearchParams({ subject: `Website enquiry from ${values.name}`, body });
+      // A mailto link expects percent-encoded spaces rather than the plus signs a query string uses.
+      window.location.href = `${href}?${query.toString().replace(/\+/g, "%20")}`;
+      button!.dataset.state = "drafted";
+      buttonLabel!.textContent = "Email drafted";
+      return true;
     }
 
     function failure() {
@@ -237,11 +261,7 @@ const config = getContactConfig({
         fields[name].removeAttribute("aria-invalid");
         errorNodes[name].textContent = "";
         errorNodes[name].hidden = true;
-        if (button.dataset.state === "sent") clearSent();
-        if (status.dataset.state === "success") {
-          status.textContent = "";
-          delete status.dataset.state;
-        }
+        clearSent();
       });
     }
 
@@ -268,7 +288,13 @@ const config = getContactConfig({
       }
 
       if (!available) {
-        announce("Enquiry sending is unavailable right now. Your details are still here; please use the email option if one is listed.", true);
+        if (draftEmail(result.values)) {
+          announce("Your email app should now open with these details. Send it from there and it reaches us.", false, false);
+          emailGuidance.hidden = false;
+          alertText("Your email app should now open with these details. Send it from there and it reaches us.");
+        } else {
+          announce("Enquiry sending is unavailable right now. Your details are still here; please use the email option if one is listed.", true);
+        }
         return;
       }
 
@@ -305,8 +331,10 @@ const config = getContactConfig({
           form.reset();
           showErrors();
           markSent();
-          announce("Your enquiry has been sent. Thank you for getting in touch.");
-          status.dataset.state = "success";
+          status.textContent = "";
+          delete status.dataset.state;
+          emailGuidance.hidden = true;
+          alertText("Your enquiry has been sent.");
           return;
         }
 

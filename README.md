@@ -24,6 +24,7 @@ Run `npm ci` for initial setup or when dependencies change. If dependencies are 
 | `npm run dev` | Start the local development server. |
 | `npm run check` | Check Astro and TypeScript files. |
 | `npm test` | Run focused content, publishing, and contact tests using Node's test runner. |
+| `npm run enquiries` | Print the most recently stored enquiry copies, when a database is configured. |
 | `npm run build` | Check publishing prerequisites and create the Vercel deployment output. |
 | `npm run preview` | Serve the built marketing pages locally; this static preview does not run the enquiry endpoint. |
 
@@ -41,7 +42,7 @@ Most business copy lives in `src\content\site.ts`: the hero, services, proof sta
 - `public\images\`: original social-preview artwork.
 - `public\favicon.svg`: original brand icon.
 
-Contact details and the production domain are environment configuration, not hardcoded live addresses.
+The production domain and delivery credentials are environment configuration. The published contact address defaults to `admin@jbautomate.ca` in `src\lib\site-config.ts`; `PUBLIC_CONTACT_EMAIL` overrides it for another deployment.
 
 ### Visuals and interaction
 
@@ -87,22 +88,48 @@ Copy `.env.example` to `.env` for local configuration. Never commit `.env` or cr
 | `CONTACT_TO_EMAIL` | Fixed, server-only recipient. A visitor cannot choose it. |
 | `CONTACT_RATE_LIMIT_CONFIGURED` | Set to `true` only after configuring a real hosting-level rule for the form. This flag does not create a rate limiter. |
 | `PRIVACY_NOTICE_APPROVED` | Set to `true` after supplying and approving the actual privacy practices. |
+| `ENQUIRY_DELIVERY` | `server` (default) expects the endpoint and Resend. `email_app` is a static deployment with no endpoint, where the form hands the enquiry to the visitor's own email application. |
+| `DATABASE_URL` | Optional PostgreSQL connection string. When set, a copy of each valid enquiry is stored so it can be followed up. When empty, nothing is stored. |
+| `ENQUIRY_HASH_SALT` | Optional salt for the stored hashes. Use a long random value; changing it resets duplicate and throttle matching. |
 
 The form collects name, email, optional business name, and a short description. It does not accept attachments, protected business datasets, or account credentials.
 
-Delivery happens through the on-demand `src\pages\api\contact.ts` endpoint and Resend. The application does not add an enquiry database. Messages and provider delivery records may still be retained by the mailbox and providers; do not describe this as "no storage."
+### How an enquiry reaches us
+
+The form adapts to the deployment, and the privacy notice changes with it:
+
+- **With the endpoint** (`RESEND_API_KEY` and the rest configured): the browser posts to `src\pages\api\contact.ts`, which validates the request, emails it through Resend, and stores a copy when `DATABASE_URL` is set. The button confirms the enquiry was sent.
+- **Without the endpoint** (any static build, including GitHub Pages): nothing is posted anywhere. The button validates the fields, then opens the visitor's own email application with the details written out, and the entered values stay on the page. The button says the email was drafted, never that it was sent, because only the visitor can send it.
+
+Messages and provider delivery records may still be retained by the mailbox and providers; do not describe this as "no storage."
+
+### Stored enquiry copies
+
+`DATABASE_URL` enables one table, `enquiries`, created automatically on first use. A row holds the submitted fields, the arrival time, whether the email provider accepted the message, and salted one-way hashes of the caller address and of the message content. Raw addresses are never stored.
+
+Storing is best effort and silent: it runs after the delivery attempt, never changes the response a visitor sees, and is skipped without comment when a copy would be a repeat of the same message within 24 hours, when the same caller already stored 3 copies in 15 minutes or 12 in a day, or when the table already received 60 copies in the last hour. This keeps the table useful for follow-up instead of a spam target. It is not a substitute for the required hosting-level rate limit on the endpoint.
+
+Run `npm run enquiries` to print the most recent copies, or `npm run enquiries -- 50` for more. Keep the database credentials out of version control, and delete stored copies in line with the retention practice published in the privacy notice.
+
+**Storage needs the endpoint.** A static deployment has no server, so it stores nothing: locally, copies are written while `npm run dev` is running, and in a deployment only if the site is hosted somewhere that runs `src\pages\api\contact.ts` with `DATABASE_URL` set.
 
 Successful submission means the email provider accepted the message, not that a person has read it or that inbox delivery is guaranteed. Automated tests mock delivery and never send live email.
+
+## Deploying to GitHub Pages
+
+`.github\workflows\deploy-pages.yml` builds the site and publishes the static output to Pages on the `jbautomate.ca` domain in `CNAME`. Pages serves files only: it cannot run the enquiry endpoint, hold a secret, or reach a database. The workflow therefore builds with `ENQUIRY_DELIVERY=email_app`, and the form uses the visitor's email application.
+
+To run the endpoint and store enquiries in a deployment, host the site somewhere that executes server code (the Vercel adapter is already configured), set the delivery variables plus `DATABASE_URL` there, leave `ENQUIRY_DELIVERY` at `server`, and configure the required hosting-level rate limit for **POST `/api/contact`**.
 
 ## Before public deployment
 
 1. Supply the actual domain and public contact address.
-2. Authenticate a sending domain in Resend and configure its API key, sender, and recipient as server-side environment variables.
-3. Replace the draft retention text in `src\content\site.ts`. Include the receiving mailbox provider, actual retention practice, deletion process, and any applicable limitations. Review the rest of the privacy page against the actual deployment and processors.
-4. Configure a platform-level rate-limiting rule for **POST `/api/contact`**. Use the hosting provider's firewall controls, a per-client/IP limit appropriate to genuine enquiries, and a blocking or throttling response. If the selected hosting plan does not support it, use a suitable upstream protection service before enabling the public form. Do not substitute an in-memory counter in the serverless function.
-5. Set `CONTACT_RATE_LIMIT_CONFIGURED=true` only after confirming the rule exists. Set `PRIVACY_NOTICE_APPROVED=true` only after the privacy work is complete.
-6. Set `SITE_MODE=production`, run the configured checks and build, and make a controlled delivery check using synthetic content and an authorized mailbox.
-7. Deploy the build to the configured Vercel project only when authorized.
+2. Decide how enquiries arrive. For a static deployment set `ENQUIRY_DELIVERY=email_app` and skip steps 3 and 4. For the endpoint, authenticate a sending domain in Resend and configure its API key, sender, and recipient as server-side environment variables.
+3. Configure a platform-level rate-limiting rule for **POST `/api/contact`**. Use the hosting provider's firewall controls, a per-client/IP limit appropriate to genuine enquiries, and a blocking or throttling response. If the selected hosting plan does not support it, use a suitable upstream protection service before enabling the public form. Do not substitute an in-memory counter in the serverless function.
+4. Set `CONTACT_RATE_LIMIT_CONFIGURED=true` only after confirming the rule exists.
+5. Review the retention text in `src\content\site.ts` and the rest of the privacy page against the actual deployment, mailbox provider, and processors. Set `PRIVACY_NOTICE_APPROVED=true` only after that review.
+6. Set `SITE_MODE=production`, run the configured checks and build, and confirm the enquiry path end to end: a controlled delivery check with synthetic content for the endpoint, or a drafted email for a static deployment.
+7. Deploy only when authorized.
 
 A production build is blocked while required values are missing or obvious placeholders remain. Build checks load the production `.env` files using Vite's environment precedence. Environment changes that affect public content require a new build.
 

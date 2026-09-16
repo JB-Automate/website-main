@@ -1,10 +1,9 @@
 ---
 import Brand from "./Brand.astro";
-import { siteConfig } from "../lib/site-config";
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer container">
   <div class="footer-main"><Brand /><div class="footer-links"><a href="/#services">What we do</a><a href="/#contact">Get in touch</a><a href="/privacy/">Privacy</a></div></div>
-  <div class="footer-bottom"><p>&copy; {year} <span class="wordmark">JB Automate</span>.</p>{siteConfig.isPreview && <span class="preview-label">Design preview</span>}<a href="#top">Back to top <span aria-hidden="true">&#8593;</span></a></div>
+  <div class="footer-bottom"><p>&copy; {year} <span class="wordmark">JB Automate</span>.</p><a href="#top">Back to top <span aria-hidden="true">&#8593;</span></a></div>
 </footer>

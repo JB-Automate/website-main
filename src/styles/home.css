@@ -189,7 +189,6 @@
   .contact-email { margin-top: 50px; }
   .contact-email a { display: inline-flex; align-items: center; gap: 14px; max-width: 100%; overflow-wrap: anywhere; font-size: 25px; font-weight: 500; }
   .contact-email a:hover { color: var(--blue); }
-  .placeholder-email { display: block; font-size: 25px; overflow-wrap: anywhere; }
   .contact-form { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
   .form-field { min-width: 0; margin-bottom: 24px; }
@@ -212,8 +211,8 @@
   .submit-icon { display: inline-grid; place-items: center; width: 22px; height: 22px; }
   .submit-icon > * { grid-area: 1 / 1; transition: opacity .2s, transform .35s var(--ease); }
   .submit-check { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #fff; color: var(--ink); }
-  .form-submit:not([data-state="sent"]) .submit-check { opacity: 0; transform: scale(.3); }
-  .form-submit[data-state="sent"] .submit-arrow { opacity: 0; transform: translateX(9px); }
+  .form-submit:not(:is([data-state="sent"], [data-state="drafted"])) .submit-check { opacity: 0; transform: scale(.3); }
+  .form-submit:is([data-state="sent"], [data-state="drafted"]) .submit-arrow { opacity: 0; transform: translateX(9px); }
   .form-submit[data-shake] { animation: submit-shake .5s var(--ease); }
   @keyframes submit-shake {
     0%, 100% { transform: translateX(0); }
@@ -251,7 +250,7 @@
     .process-grid h3 { font-size: 25px; }
     .faq-section { gap: 48px; }
     .contact-panel { gap: 64px; }
-    .contact-email a, .placeholder-email { font-size: 23px; }
+    .contact-email a { font-size: 23px; }
   }
   @media (max-width: 1000px) {
     .hero { --hero-spread: 38px; }
@@ -422,7 +421,7 @@
     .home-page .contact-intro h2 { font-size: 42px; }
     .contact-description { margin-top: 24px; font-size: 18px; }
     .contact-next { font-size: 17px; }
-    .contact-email a, .placeholder-email { font-size: 22px; }
+    .contact-email a { font-size: 22px; }
     .form-row { grid-template-columns: 1fr; gap: 0; }
     .form-field input, .form-field textarea { font-size: 16px; }
     .form-submit { gap: 14px; }

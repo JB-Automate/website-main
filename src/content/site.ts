@@ -204,8 +204,7 @@ export const siteContent = {
       "We'll get in touch to arrange a conversation.",
   },
   privacy: {
-    // Replace this draft with your actual mailbox/provider retention practice before publishing.
     retention:
-      "[DRAFT: Confirm how long enquiry emails and provider delivery records are retained, who manages deletion, and how a person can request deletion.]",
+      "Enquiry emails stay in our business mailbox while we are in contact and for up to 24 months after the last message, then we delete them. Where the enquiry endpoint is running, the copy it keeps for follow-up is deleted on the same schedule. Ask us at the address on this page to delete your enquiry sooner: we action deletion requests within 30 days and confirm when it is done. Mailbox and email providers may keep their own delivery or backup records under their own arrangements, and we cannot delete a message you sent from your own sent items.",
   },
 } as const;

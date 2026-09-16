@@ -77,8 +77,6 @@
   .privacy-back svg { transform: rotate(180deg); }
   .privacy-page h1 { font-size: 57px; }
   .privacy-lead { margin-top: 26px; font-size: 20px; color: var(--muted); }
-  .privacy-draft { padding: 22px; margin-top: 32px; background: #eff1e7; border: 1px solid #d2dbca; border-radius: 7px; font-size: 16px; }
-  .privacy-draft p { margin-top: 8px; color: var(--muted); }
   .privacy-page section { margin-top: 40px; }
   .privacy-page section h2 { font-size: 27px; letter-spacing: -.025em; margin-bottom: 15px; }
   .privacy-page section p { font-size: 17px; line-height: 1.9; color: var(--muted); }
@@ -114,7 +112,7 @@
     .privacy-page h1 { font-size: 43px; }
     .privacy-lead { font-size: 18px; }
     .privacy-page section h2 { font-size: 25px; }
-    .privacy-page section p, .privacy-draft { font-size: 16px; }
+    .privacy-page section p { font-size: 16px; }
   }
   @media (max-width: 359px) {
     .container { width: calc(100% - 32px); }

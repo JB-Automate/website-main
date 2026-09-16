@@ -8,6 +8,8 @@ import {
   validateContactInput,
 } from "./contact-validation.ts";
 import type { ContactFieldErrors, ContactFieldName, Enquiry } from "./contact-validation.ts";
+import { requestSource } from "./enquiry-store.ts";
+import type { EnquiryStore } from "./enquiry-store.ts";
 import { EnquiryDeliveryError, sendEnquiry } from "./send-enquiry.ts";
 import type { DeliveryFailureReason } from "./send-enquiry.ts";
 
@@ -26,7 +28,10 @@ export interface ContactHandlerOptions {
   fetch?: typeof globalThis.fetch;
   providerTimeoutMs?: number;
   log?: (event: ContactOperationalEvent) => void;
+  store?: EnquiryStore | null;
 }
+
+const ACCEPTED_CONTENT_TYPE = /^application\/(?:json|x-www-form-urlencoded)(?:\s*;\s*charset=(?:"utf-8"|utf-8))?\s*$/i;
 
 class ContactRequestError extends Error {
   readonly status: number;
@@ -175,6 +180,7 @@ function wantsJson(request: Request): boolean {
 export async function handleContactRequest(request: Request, options: ContactHandlerOptions): Promise<Response> {
   const { config } = options;
   const log = options.log ?? ((event: ContactOperationalEvent) => console.info("Contact endpoint", event));
+  const store = options.store ?? null;
 
   function respond(status: number, message: string, errors?: ContactFieldErrors, values?: Enquiry): Response {
     const reply: ContactReply = { ok: status === 200, message, ...(errors ? { errors } : {}) };
@@ -193,11 +199,34 @@ export async function handleContactRequest(request: Request, options: ContactHan
     return new Response(request.method === "HEAD" ? null : body, { status, headers });
   }
 
+  /** Keeps a copy of the enquiry for follow-up. Storage never changes what the visitor is told. */
+  async function keepEnquiry(values: Enquiry, delivered: boolean): Promise<void> {
+    if (store) await store.record(values, { delivered, source: requestSource(request) });
+  }
+
+  /**
+   * Sending is switched off, so the enquiry cannot be emailed. The visitor still told us something,
+   * and a same-origin submission is worth keeping so it can be answered by hand.
+   */
+  async function keepUnsentEnquiry(): Promise<void> {
+    if (!store || request.headers.get("origin") !== new URL(request.url).origin) return;
+    const contentType = request.headers.get("content-type") ?? "";
+    if (!ACCEPTED_CONTENT_TYPE.test(contentType)) return;
+    try {
+      const input = parseContactBody(await readContactBody(request), /^application\/json/i.test(contentType));
+      const result = validateContactInput(input);
+      if (result.ok) await keepEnquiry(result.values, false);
+    } catch (error) {
+      if (!(error instanceof ContactRequestError)) throw error;
+    }
+  }
+
   if (request.method !== "POST") {
     return respond(405, "Please use the enquiry form to send a message, or email us directly.");
   }
   if (!config.available) {
     log({ event: "contact_unavailable" });
+    await keepUnsentEnquiry();
     return respond(503, "Enquiry sending is unavailable right now. Please use the email option if one is listed.");
   }
   if (request.headers.get("origin") !== config.origin) {
@@ -206,7 +235,7 @@ export async function handleContactRequest(request: Request, options: ContactHan
 
   const contentType = request.headers.get("content-type") ?? "";
   if (
-    !/^application\/(?:json|x-www-form-urlencoded)(?:\s*;\s*charset=(?:"utf-8"|utf-8))?\s*$/i.test(contentType) ||
+    !ACCEPTED_CONTENT_TYPE.test(contentType) ||
     !["", "identity"].includes((request.headers.get("content-encoding") ?? "").toLowerCase())
   ) {
     return respond(415, "This enquiry could not be sent. Please use the enquiry form or email us directly.");
@@ -241,6 +270,7 @@ export async function handleContactRequest(request: Request, options: ContactHan
         reason: error.reason,
         ...(error.providerStatus !== undefined ? { status: error.providerStatus } : {}),
       });
+      await keepEnquiry(result.values, false);
       return respond(
         error.reason === "timeout" ? 504 : 502,
         error.reason === "rejected"
@@ -254,5 +284,6 @@ export async function handleContactRequest(request: Request, options: ContactHan
   }
 
   log({ event: "contact_delivery_accepted" });
+  await keepEnquiry(result.values, true);
   return respond(200, "Your enquiry has been sent. Thank you for getting in touch.");
 }

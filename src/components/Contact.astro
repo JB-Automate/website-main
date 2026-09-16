@@ -12,7 +12,7 @@ const { contact } = siteContent;
       <h2 id="contact-heading">{contact.heading[0]}<br />{contact.heading[1]}</h2>
       <p class="contact-description">{contact.description}</p>
       <p class="contact-next">{contact.nextStep}</p>
-      <div class="contact-email">{siteConfig.hasPublicEmail ? <a href={siteConfig.emailHref}>{siteConfig.email}<Icon name="diagonal" size={22} /></a> : <span class="placeholder-email">{siteConfig.email}</span>}</div>
+      <div class="contact-email"><a href={siteConfig.emailHref}>{siteConfig.email}<Icon name="diagonal" size={22} /></a></div>
     </div>
     <ContactForm />
   </div>

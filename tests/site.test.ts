@@ -50,11 +50,32 @@ test("production rejects placeholder and malformed email addresses", () => {
 });
 
 test("approval alone does not allow unfinished privacy copy to ship", () => {
-  assert.ok(validateProductionReadiness(configured, siteContent.privacy.retention).some((error) => error.includes("retention")));
+  for (const draft of ["", "   ", "[DRAFT: confirm retention]", "TODO: write the retention practice", "PLACEHOLDER"]) {
+    assert.ok(validateProductionReadiness(configured, draft).some((error) => error.includes("retention")), draft);
+  }
+  // The published retention practice must stay finished, not slip back to a placeholder.
+  assert.deepEqual(validateProductionReadiness(configured, siteContent.privacy.retention), []);
 });
 
 test("a build cannot claim rate limiting is ready by default", () => {
   assert.ok(validateProductionReadiness({ ...configured, CONTACT_RATE_LIMIT_CONFIGURED: "false" }, retention).some((error) => error.includes("rate limit")));
+});
+
+test("a static build without a delivery endpoint still requires a real address and finished privacy copy", () => {
+  const staticBuild = {
+    SITE_MODE: "production",
+    ENQUIRY_DELIVERY: "email_app",
+    PUBLIC_SITE_URL: "https://business-domain.ca",
+    PUBLIC_CONTACT_EMAIL: "hello@business-domain.ca",
+    PRIVACY_NOTICE_APPROVED: "true",
+  };
+  assert.deepEqual(validateProductionReadiness(staticBuild, retention), []);
+
+  for (const [key, value] of [["PUBLIC_CONTACT_EMAIL", "hello@example.com"], ["PRIVACY_NOTICE_APPROVED", "false"]]) {
+    assert.ok(validateProductionReadiness({ ...staticBuild, [key]: value }, retention).length > 0, key);
+  }
+  assert.ok(validateProductionReadiness({ ...staticBuild }, "[DRAFT: unfinished]").some((error) => error.includes("retention")));
+  assert.match(validateProductionReadiness({ ...staticBuild, ENQUIRY_DELIVERY: "maybe" }, retention)[0], /ENQUIRY_DELIVERY/);
 });
 
 test("the publish guard uses the same email-delivery rules as the running endpoint", () => {
