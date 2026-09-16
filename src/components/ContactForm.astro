@@ -24,11 +24,12 @@ const config = getContactConfig({
 >
   <div class="form-row">
     <div class="form-field">
-      <label for="enquiry-name">Your name</label>
+      <label class="sr-only" for="enquiry-name">Your name</label>
       <input
         id="enquiry-name"
         name="name"
         type="text"
+        placeholder="Your name"
         autocomplete="name"
         required
         maxlength={CONTACT_LIMITS.name}
@@ -37,11 +38,12 @@ const config = getContactConfig({
       <p class="field-error" id="enquiry-name-error" hidden></p>
     </div>
     <div class="form-field">
-      <label for="enquiry-email">Email address</label>
+      <label class="sr-only" for="enquiry-email">Email address</label>
       <input
         id="enquiry-email"
         name="email"
         type="email"
+        placeholder="Email address"
         inputmode="email"
         autocomplete="email"
         spellcheck="false"
@@ -53,11 +55,12 @@ const config = getContactConfig({
     </div>
   </div>
   <div class="form-field">
-    <label for="enquiry-company">Business name (optional)</label>
+    <label class="sr-only" for="enquiry-company">Business name (optional)</label>
     <input
       id="enquiry-company"
       name="company"
       type="text"
+      placeholder="Business name (optional)"
       autocomplete="organization"
       maxlength={CONTACT_LIMITS.company}
       aria-describedby="enquiry-company-error"
@@ -65,14 +68,14 @@ const config = getContactConfig({
     <p class="field-error" id="enquiry-company-error" hidden></p>
   </div>
   <div class="form-field">
-    <label for="enquiry-message">What would you like to make easier or build?</label>
+    <label class="sr-only" for="enquiry-message">What would you like to make easier or build?</label>
     <textarea
       id="enquiry-message"
       name="message"
       rows="4"
       required
       maxlength={CONTACT_LIMITS.message}
-      placeholder="For example, we spend too much time moving information between systems."
+      placeholder="What would you like to make easier or build? For example, we spend too much time moving information between systems."
       aria-describedby="enquiry-information enquiry-message-error"
     ></textarea>
     <p class="field-error" id="enquiry-message-error" hidden></p>
@@ -88,22 +91,21 @@ const config = getContactConfig({
     {" "}<a href="/privacy/">Read our privacy notice.</a>
   </p>
 
-  {!config.available && (
-    <p class="form-notice" id="enquiry-unavailable">Preview only — enquiry sending is unavailable.</p>
-  )}
-
-  <button
-    class="button button--primary form-submit"
-    type="submit"
-    disabled={!config.available}
-    aria-describedby={!config.available ? "enquiry-unavailable" : undefined}
-  >
+  <button class="button button--primary form-submit" type="submit">
     <span data-submit-label>Send your enquiry</span>
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-      <path d="M5 12h14m-6-6 6 6-6 6"></path>
-    </svg>
+    <span class="submit-icon" aria-hidden="true">
+      <svg class="submit-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+        <path d="M5 12h14m-6-6 6 6-6 6"></path>
+      </svg>
+      <span class="submit-check">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+          <path d="m4.5 12.5 5 5.5L19.5 6"></path>
+        </svg>
+      </span>
+    </span>
   </button>
 
+  <p class="sr-only" id="enquiry-alert" role="alert" aria-live="assertive" aria-atomic="true"></p>
   <p class="form-status" id="enquiry-status" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
   <p class="form-note" id="enquiry-email-guidance" hidden>
     {config.publicEmail ? (
@@ -134,9 +136,10 @@ const config = getContactConfig({
     const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
     const buttonLabel = button?.querySelector<HTMLElement>("[data-submit-label]");
     const status = form?.querySelector<HTMLElement>("#enquiry-status");
+    const alerts = form?.querySelector<HTMLElement>("#enquiry-alert");
     const emailGuidance = form?.querySelector<HTMLElement>("#enquiry-email-guidance");
     const honeypot = form?.querySelector<HTMLInputElement>("#enquiry-website");
-    if (!form || !button || !buttonLabel || !status || !emailGuidance || !honeypot) return;
+    if (!form || !button || !buttonLabel || !status || !alerts || !emailGuidance || !honeypot) return;
 
     const fields = {} as Record<ContactFieldName, HTMLInputElement | HTMLTextAreaElement>;
     const errorNodes = {} as Record<ContactFieldName, HTMLElement>;
@@ -149,6 +152,7 @@ const config = getContactConfig({
     }
 
     const available = form.dataset.contactAvailable === "true";
+    const defaultLabel = buttonLabel.textContent ?? "Send your enquiry";
     let pending = false;
     form.noValidate = true;
 
@@ -163,19 +167,59 @@ const config = getContactConfig({
       return first ? fields[first] : undefined;
     }
 
+    function shake() {
+      button!.removeAttribute("data-shake");
+      void button!.offsetWidth;
+      button!.setAttribute("data-shake", "");
+    }
+
+    function alertText(message: string) {
+      alerts!.textContent = "";
+      requestAnimationFrame(() => {
+        alerts!.textContent = message;
+      });
+    }
+
+    function rejectFields(errors: ContactFieldErrors) {
+      const first = showErrors(errors);
+      status!.textContent = "";
+      delete status!.dataset.state;
+      emailGuidance!.hidden = true;
+      shake();
+      alertText(CONTACT_FIELD_NAMES.filter((name) => errors[name]).map((name) => errors[name]).join(" "));
+      first?.focus();
+    }
+
     function announce(message: string, failed = false, focus = true) {
       status!.textContent = message;
       status!.dataset.state = failed ? "error" : "status";
       emailGuidance!.hidden = !failed;
+      if (failed) shake();
       if (focus) status!.focus();
     }
 
     function setPending(value: boolean) {
       pending = value;
-      button!.disabled = value || !available;
       button!.setAttribute("aria-busy", String(value));
-      buttonLabel!.textContent = value ? "Sending your enquiry…" : "Send your enquiry";
       for (const name of CONTACT_FIELD_NAMES) fields[name].readOnly = value;
+      if (value) {
+        button!.dataset.state = "sending";
+        buttonLabel!.textContent = "Sending your enquiry…";
+      } else if (button!.dataset.state !== "sent") {
+        delete button!.dataset.state;
+        buttonLabel!.textContent = defaultLabel;
+      }
+    }
+
+    function markSent() {
+      button!.dataset.state = "sent";
+      buttonLabel!.textContent = "Enquiry sent";
+    }
+
+    function clearSent() {
+      if (button!.dataset.state !== "sent") return;
+      delete button!.dataset.state;
+      buttonLabel!.textContent = defaultLabel;
     }
 
     function failure() {
@@ -186,11 +230,14 @@ const config = getContactConfig({
       return value !== null && typeof value === "object" && !Array.isArray(value);
     }
 
+    button.addEventListener("animationend", () => button!.removeAttribute("data-shake"));
+
     for (const name of CONTACT_FIELD_NAMES) {
       fields[name].addEventListener("input", () => {
         fields[name].removeAttribute("aria-invalid");
         errorNodes[name].textContent = "";
         errorNodes[name].hidden = true;
+        if (button.dataset.state === "sent") clearSent();
         if (status.dataset.state === "success") {
           status.textContent = "";
           delete status.dataset.state;
@@ -201,10 +248,7 @@ const config = getContactConfig({
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (pending) return;
-      if (!available) {
-        announce("Enquiry sending is unavailable in this preview. Please use the email option if one is listed.", true);
-        return;
-      }
+      clearSent();
 
       showErrors();
       const result = validateContactInput({
@@ -215,9 +259,16 @@ const config = getContactConfig({
         website: honeypot.value,
       });
       if (!result.ok) {
-        const first = result.reason === "invalid_fields" ? showErrors(result.errors) : undefined;
-        announce("Please check your details. Your enquiry has not been sent.", true, !first);
-        first?.focus();
+        if (result.reason === "invalid_fields") {
+          rejectFields(result.errors);
+        } else {
+          announce("Please check your details. Your enquiry has not been sent.", true);
+        }
+        return;
+      }
+
+      if (!available) {
+        announce("Enquiry sending is unavailable right now. Your details are still here; please use the email option if one is listed.", true);
         return;
       }
 
@@ -252,6 +303,8 @@ const config = getContactConfig({
         }
         if (response.status === 200 && payload.ok === true && typeof payload.message === "string") {
           form.reset();
+          showErrors();
+          markSent();
           announce("Your enquiry has been sent. Thank you for getting in touch.");
           status.dataset.state = "success";
           return;
@@ -264,13 +317,13 @@ const config = getContactConfig({
             if (typeof error === "string" && error.length <= 200) errors[name] = error;
           }
         }
-        const first = showErrors(errors);
-        if (response.status === 422 && first) {
-          announce("Please check the highlighted fields. Your enquiry has not been sent.", true, false);
-          first.focus();
+        if (response.status === 422 && CONTACT_FIELD_NAMES.some((name) => errors[name])) {
+          rejectFields(errors);
         } else if (response.status === 503) {
+          showErrors(errors);
           announce("Enquiry sending is unavailable right now. Your details are still here; please use the email option if one is listed.", true);
         } else {
+          showErrors(errors);
           failure();
         }
       } catch (error) {
