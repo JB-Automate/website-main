@@ -54,9 +54,9 @@
   .skip-link:focus { top: 12px; }
   .site-header { position: sticky; top: 0; z-index: 30; background: var(--paper); border-bottom: 1px solid #e1e2d9; }
   .header-inner { min-height: 88px; display: flex; align-items: center; justify-content: space-between; gap: 30px; }
-  .brand { display: inline-flex; align-items: center; gap: 11px; width: fit-content; white-space: nowrap; font-size: 24px; font-weight: 700; line-height: 1.2; letter-spacing: -.05em; }
-  .brand .wordmark { font-size: 20px; font-weight: 700; letter-spacing: -.005em; }
-  .brand-mark { height: 26px; width: auto; color: var(--blue); }
+  .brand { display: inline-flex; align-items: center; gap: 12px; width: fit-content; white-space: nowrap; font-size: 28px; font-weight: 700; line-height: 1.2; letter-spacing: -.05em; }
+  .brand .wordmark { font-size: 25px; font-weight: 700; letter-spacing: -.005em; }
+  .brand-mark { height: 30px; width: auto; color: var(--blue); }
   .desktop-nav { display: flex; align-items: center; gap: 28px; margin-left: auto; }
   .desktop-nav a { position: relative; padding-block: 13px; font-size: 15px; }
   .desktop-nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 7px; height: 1px; background: var(--blue); transform: scaleX(0); transform-origin: left; transition: transform .3s var(--ease); }
@@ -102,9 +102,9 @@
   @media (max-width: 640px) {
     .container { width: calc(100% - 40px); }
     .header-inner { min-height: 72px; }
-    .brand { font-size: 22px; gap: 9px; }
-    .brand .wordmark { font-size: 18px; }
-    .brand-mark { height: 23px; }
+    .brand { font-size: 25px; gap: 10px; }
+    .brand .wordmark { font-size: 22px; }
+    .brand-mark { height: 26px; }
     .footer-main { flex-direction: column; align-items: start; gap: 29px; }
     .footer-links { flex-wrap: wrap; font-size: 16px; gap: 22px; }
     .footer-bottom { flex-wrap: wrap; font-size: 14px; gap: 14px; }

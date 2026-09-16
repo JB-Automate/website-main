@@ -53,13 +53,13 @@ export const siteContent = {
     ],
   },
   work: {
-    label: "Illustrative example",
+    label: "",
     task: {
       label: "Prepare a follow-up",
       heading: "A follow-up, ready.",
       lines: ["Confirm the project goal.", "Arrange the next conversation."],
     },
-    note: "Illustrative examples, not client systems. No business data is used or sent.",
+    note: "",
   },
   comparison: {
     heading: ["A starting point is not", "the whole solution."],
@@ -120,7 +120,7 @@ export const siteContent = {
           "A responsible partner. Agreed maintenance, support, and escalation.",
       },
     ],
-    note: "This compares delivery scope, not the full capabilities or enterprise offerings of Claude. Controls, deployment, and support are agreed per project.",
+    note: "",
   },
   security: {
     heading: ["Your trust is part", "of the brief."],
@@ -149,7 +149,7 @@ export const siteContent = {
           "An agreed plan for maintenance, support, and what happens when something needs attention.",
       },
     ],
-    note: "Safeguards and support are agreed for each engagement, not blanket guarantees.",
+    note: "",
   },
   process: {
     heading: "You bring the business need.",
