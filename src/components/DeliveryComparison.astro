@@ -9,10 +9,10 @@ const { comparison } = siteContent;
     <p class="section-description">{comparison.description}</p>
   </div>
   <div class="comparison-frame">
-    <table class="comparison-table" role="table" aria-describedby="comparison-note">
+    <table class="comparison-table" aria-describedby="comparison-note">
       <caption class="sr-only">A one-off Claude-generated starting point compared with a delivered JB Automate solution.</caption>
       <thead>
-        <tr role="row">
+        <tr>
           <th scope="col" id="criterion-column">What matters<br />to your business</th>
           <th scope="col" id="starting-point-column"><strong>{comparison.leftHeading}</strong><span>{comparison.leftSubtitle}</span></th>
           <th scope="col" id="delivered-column"><strong>{comparison.rightHeading}</strong><span>{comparison.rightSubtitle}</span></th>
@@ -20,7 +20,7 @@ const { comparison } = siteContent;
       </thead>
       <tbody>
         {comparison.rows.map((row, index) => (
-          <tr role="row">
+          <tr>
             <th scope="row" id={`criterion-${index}`} headers="criterion-column">{row.criterion}</th>
             <td headers={`starting-point-column criterion-${index}`}><span class="mobile-column-label" aria-hidden="true">Claude output</span>{row.startingPoint}</td>
             <td headers={`delivered-column criterion-${index}`}><span class="mobile-column-label wordmark" aria-hidden="true">JB Automate</span>{row.delivered}</td>

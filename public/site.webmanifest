@@ -1,0 +1,19 @@
+{
+  "name": "JB Automate",
+  "short_name": "JB",
+  "description": "Custom AI apps, automated workflows, and websites built around your business.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "lang": "en-CA",
+  "dir": "ltr",
+  "display": "browser",
+  "theme_color": "#f8f7f2",
+  "background_color": "#f8f7f2",
+  "icons": [
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any" },
+    { "src": "/icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any" },
+    { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any" },
+    { "src": "/apple-touch-icon.png", "type": "image/png", "sizes": "180x180", "purpose": "maskable" }
+  ]
+}

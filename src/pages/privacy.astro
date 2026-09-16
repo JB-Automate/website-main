@@ -17,10 +17,10 @@ const delivery = getContactConfig({
 });
 ---
 
-<BaseLayout title="Privacy | JB Automate" description="How JB Automate handles information submitted through this website." isHome={false}>
+<BaseLayout isHome={false} mainLabelledBy="privacy-heading">
   <article class="privacy-page container">
     <a href="/" class="text-link privacy-back"><Icon name="arrow" size={17} />Back to the website</a>
-    <h1>Privacy, in plain language.</h1>
+    <h1 id="privacy-heading">Privacy, in plain language.</h1>
     <p class="privacy-lead">This notice covers the <span class="wordmark">JB Automate</span> website and its enquiry form, not the separate data arrangements for client projects.</p>
     <section><h2>What the enquiry form collects</h2><p>Your name, email address, optional business name, and the message you choose to send. Please provide only a high-level description. Do not submit confidential business information, protected datasets, or personal records.</p></section>
     <section><h2>Why we use it</h2><p>We use enquiry details to understand the request, respond, and arrange a conversation about a potential engagement. The form does not subscribe you to marketing emails.</p></section>

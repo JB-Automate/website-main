@@ -1,9 +1,11 @@
 ---
 import Brand from "./Brand.astro";
+import { canonicalPath } from "../lib/seo";
 const year = new Date().getFullYear();
+const onPrivacy = canonicalPath(Astro.url.pathname) === "/privacy/";
 ---
 
 <footer class="site-footer container">
-  <div class="footer-main"><Brand /><div class="footer-links"><a href="/#services">What we do</a><a href="/#contact">Get in touch</a><a href="/privacy/">Privacy</a></div></div>
+  <div class="footer-main"><Brand /><nav class="footer-links" aria-label="Footer"><a href="/#services">What we do</a><a href="/#contact">Get in touch</a><a href="/privacy/" aria-current={onPrivacy ? "page" : undefined}>Privacy</a></nav></div>
   <div class="footer-bottom"><p>&copy; {year} <span class="wordmark">JB Automate</span>.</p><a href="#top">Back to top <span aria-hidden="true">&#8593;</span></a></div>
 </footer>

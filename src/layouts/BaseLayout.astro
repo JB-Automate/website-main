@@ -8,58 +8,99 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { siteContent } from "../content/site";
 import { siteConfig } from "../lib/site-config";
+import { brandImages, buildJsonLdGraph, canonicalPath, seoForPath, serializeJsonLd } from "../lib/seo";
 
 interface Props {
   title?: string;
   description?: string;
   isHome?: boolean;
+  /** Id of the page's h1, so the main landmark announces the page it belongs to. */
+  mainLabelledBy?: string;
 }
 
-const {
-  title = "JB Automate | AI built around your business",
-  description = siteContent.description,
-  isHome = true,
-} = Astro.props;
-const canonicalUrl = new URL(Astro.url.pathname, siteConfig.url);
-const socialImageUrl = new URL("/images/social-card.png", siteConfig.url);
-const organizationData = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: siteContent.name,
+const seoSite = {
   url: siteConfig.url,
-  description: siteContent.description,
-  email: siteConfig.hasPublicEmail ? siteConfig.email : undefined,
+  email: siteConfig.hasPublicEmail ? siteConfig.email : null,
+  isPreview: siteConfig.isPreview,
 };
+const routeDefaults = seoForPath(Astro.url.pathname);
+const {
+  title = routeDefaults.title,
+  description = routeDefaults.description,
+  isHome = true,
+  mainLabelledBy,
+} = Astro.props;
+
+// Canonical links always use the one trailing-slash form, so /privacy and /privacy/
+// can never be indexed as two competing pages.
+const canonicalUrl = new URL(canonicalPath(Astro.url.pathname), siteConfig.url);
+const socialImageUrl = new URL(brandImages.social.path, siteConfig.url);
+const logoUrl = new URL(brandImages.logo.path, siteConfig.url);
+const jsonLd = serializeJsonLd(buildJsonLdGraph(seoSite, Astro.url.pathname));
 ---
 
 <!doctype html>
-<html lang="en-CA">
+<html lang="en-CA" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f8f7f2" />
+    <meta name="color-scheme" content="light" />
     <title>{title}</title>
     <meta name="description" content={description} />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="application-name" content={siteContent.name} />
+    <meta name="apple-mobile-web-app-title" content={siteContent.name} />
+
     <link rel="preload" href={manropeLatin} as="font" type="font/woff2" crossorigin="anonymous" />
     <link rel="preload" href={kodeMonoLatin} as="font" type="font/woff2" crossorigin="anonymous" />
-    {siteConfig.isPreview ? <meta name="robots" content="noindex, nofollow" /> : <link rel="canonical" href={canonicalUrl} />}
-    <meta property="og:type" content="website" />
+
+    {
+      siteConfig.isPreview ? (
+        <meta name="robots" content="noindex, nofollow" />
+      ) : (
+        <Fragment>
+          {/* max-image-preview:large and max-snippet:-1 opt into full-size thumbnails and
+              untruncated snippets, which is the single biggest result-appearance win available. */}
+          <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+          <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+          <link rel="canonical" href={canonicalUrl} />
+          <link rel="alternate" hreflang="en-CA" href={canonicalUrl} />
+          <link rel="alternate" hreflang="x-default" href={canonicalUrl} />
+          <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+        </Fragment>
+      )
+    }
+
+    <meta property="og:type" content={routeDefaults.ogType} />
     <meta property="og:site_name" content={siteContent.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:locale" content="en_CA" />
     {!siteConfig.isPreview && <meta property="og:url" content={canonicalUrl} />}
     <meta property="og:image" content={socialImageUrl} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="JB Automate. Put AI to work. On your terms." />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content={String(brandImages.social.width)} />
+    <meta property="og:image:height" content={String(brandImages.social.height)} />
+    <meta property="og:image:alt" content={brandImages.social.alt} />
+    <meta property="og:logo" content={logoUrl} />
+
     <meta name="twitter:card" content="summary_large_image" />
-    {!siteConfig.isPreview && <script is:inline type="application/ld+json" set:html={JSON.stringify(organizationData).replace(/</g, "\\u003c")} />}
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
+    <meta name="twitter:image:alt" content={brandImages.social.alt} />
+
+    {!siteConfig.isPreview && <script is:inline type="application/ld+json" set:html={jsonLd} />}
   </head>
   <body id="top" class:list={{ "home-page": isHome }}>
     <a href="#main" class="skip-link">Skip to content</a>
     <Header isHome={isHome} />
-    <main id="main"><slot /></main>
+    <main id="main" aria-labelledby={mainLabelledBy}><slot /></main>
     <Footer />
   </body>
 </html>
