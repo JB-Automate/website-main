@@ -1,0 +1,240 @@
+{
+  "account": {
+    "name": "JB Automate Canada",
+    "currency": "CAD",
+    "timeZone": "America/Edmonton",
+    "website": "https://jbautomate.ca",
+    "initialStatus": "PAUSED"
+  },
+  "sharedSettings": {
+    "network": "GOOGLE_SEARCH_ONLY",
+    "searchPartners": false,
+    "displayExpansion": false,
+    "language": "English",
+    "locations": ["Alberta, Canada"],
+    "locationOption": "PRESENCE",
+    "aiMax": false,
+    "textCustomization": false,
+    "finalUrlExpansion": false,
+    "bidding": "MAXIMIZE_CLICKS",
+    "trackingTemplate": "{lpurl}?utm_source=google&utm_medium=cpc&utm_campaign={campaignid}&utm_term={keyword}&utm_content={creative}"
+  },
+  "campaigns": [
+    {
+      "name": "AB | Search | Workflow Automation",
+      "dailyBudgetCad": 60,
+      "finalUrl": "https://jbautomate.ca/workflow-automation/",
+      "adGroups": [
+        {
+          "name": "Workflow Automation",
+          "keywords": [
+            "[workflow automation services]",
+            "\"workflow automation services\"",
+            "[workflow automation company]",
+            "\"workflow automation consultant\"",
+            "[business automation services]",
+            "\"business workflow automation\""
+          ]
+        },
+        {
+          "name": "Process Automation",
+          "keywords": [
+            "[business process automation services]",
+            "\"business process automation services\"",
+            "[process automation consultant]",
+            "\"automate business processes\"",
+            "[custom process automation]"
+          ]
+        },
+        {
+          "name": "Systems And Handoffs",
+          "keywords": [
+            "[business systems integration]",
+            "\"connect business systems\"",
+            "[workflow integration services]",
+            "\"automate manual data entry\"",
+            "\"automate business handoffs\""
+          ]
+        }
+      ],
+      "responsiveSearchAds": [
+        {
+          "headlines": [
+            "Workflow Automation",
+            "Automate Repetitive Work",
+            "Built Around Your Business",
+            "Connect Your Existing Tools",
+            "Keep People In Control",
+            "Workflow Help In Alberta",
+            "Less Manual Back-And-Forth",
+            "Clearer Business Handoffs",
+            "From Process To Working Tool",
+            "JB Automate",
+            "Discuss Your Workflow",
+            "Support Beyond Launch"
+          ],
+          "descriptions": [
+            "Connect routine steps, reduce manual handoffs, and keep your team in control.",
+            "Custom workflow automation for Alberta businesses, designed and supported end to end.",
+            "Start with one time-consuming process. No technical brief needed.",
+            "Agree the systems, data, review steps, and support before anything goes live."
+          ]
+        },
+        {
+          "headlines": [
+            "Simplify A Business Workflow",
+            "Reduce Manual Handoffs",
+            "Custom Workflow Automation",
+            "Practical Business Automation",
+            "Designed For Your Process",
+            "Your People Still Decide",
+            "Connect Routine Steps",
+            "A Clearer Way Of Working",
+            "Alberta Automation Partner",
+            "Build A Useful First Flow",
+            "Plan Your Automation",
+            "Maintained After Launch"
+          ],
+          "descriptions": [
+            "Turn a repeated process into a clear, supported workflow built around your business.",
+            "We map the work, connect the right steps, and keep review where it belongs.",
+            "Reduce re-entry, missed follow-ups, and manual routing between business tools.",
+            "Tell us where work gets stuck. We will turn the problem into a practical plan."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AB | Search | Custom AI Apps",
+      "dailyBudgetCad": 40,
+      "finalUrl": "https://jbautomate.ca/custom-ai-apps/",
+      "adGroups": [
+        {
+          "name": "Custom AI Applications",
+          "keywords": [
+            "[custom ai application development]",
+            "\"custom ai application development\"",
+            "[custom ai software company]",
+            "\"custom ai app developer\"",
+            "[ai application development services]"
+          ]
+        },
+        {
+          "name": "Internal AI Tools",
+          "keywords": [
+            "[internal ai tools]",
+            "\"build internal ai tool\"",
+            "[ai tools for business]",
+            "\"custom business ai tool\"",
+            "[enterprise ai application development]"
+          ]
+        },
+        {
+          "name": "AI Development Alberta",
+          "keywords": [
+            "[ai development company alberta]",
+            "\"ai developer alberta\"",
+            "[ai consultant alberta]",
+            "\"ai development edmonton\"",
+            "\"ai development calgary\""
+          ]
+        }
+      ],
+      "responsiveSearchAds": [
+        {
+          "headlines": [
+            "Custom AI Applications",
+            "AI Built For One Clear Job",
+            "No Prompt Homework",
+            "Your Business Context Built In",
+            "Human Review By Design",
+            "AI Development In Alberta",
+            "Focused Internal AI Tools",
+            "From Use Case To Working Tool",
+            "JB Automate",
+            "Plan Your AI Application",
+            "Thoughtful Data Boundaries",
+            "Support Beyond Launch"
+          ],
+          "descriptions": [
+            "Build a focused AI tool around your business context, safeguards, and review process.",
+            "Custom internal AI applications for Alberta businesses, supported beyond launch.",
+            "Start with one useful task. We design the context, validation, access, and workflow.",
+            "Your team uses the tool. We handle the AI behind it and plan for life after launch."
+          ]
+        },
+        {
+          "headlines": [
+            "Build A Focused AI Tool",
+            "Custom AI For Your Business",
+            "Turn Expertise Into A Tool",
+            "AI Without Prompt Tricks",
+            "Context And Review Built In",
+            "A Responsible AI Application",
+            "AI Tools For Alberta Teams",
+            "Designed Around Real Work",
+            "Test Before Sensitive Use",
+            "Talk Through Your Use Case",
+            "A Maintained Business Tool",
+            "Built And Supported"
+          ],
+          "descriptions": [
+            "Turn a repeatable business task into an AI application your team can actually use.",
+            "Define the job, data boundaries, acceptable output, and review before building.",
+            "We test realistic examples and failure cases before putting the tool into practice.",
+            "Tell us the task that needs to be easier. No technical specification is required."
+          ]
+        }
+      ]
+    }
+  ],
+  "sharedNegativeKeywords": [
+    "jobs",
+    "career",
+    "salary",
+    "course",
+    "courses",
+    "certification",
+    "tutorial",
+    "training",
+    "school",
+    "university",
+    "free",
+    "template",
+    "templates",
+    "download",
+    "open source",
+    "automotive",
+    "car",
+    "cars",
+    "garage",
+    "vehicle",
+    "vehicles",
+    "home automation",
+    "smart home",
+    "plc",
+    "scada",
+    "factory automation",
+    "industrial automation",
+    "robotics"
+  ],
+  "assets": {
+    "sitelinks": [
+      { "text": "Workflow Automation", "url": "https://jbautomate.ca/workflow-automation/" },
+      { "text": "Custom AI Applications", "url": "https://jbautomate.ca/custom-ai-apps/" },
+      { "text": "Security And Support", "url": "https://jbautomate.ca/#security" },
+      { "text": "Start A Conversation", "url": "https://jbautomate.ca/#contact" }
+    ],
+    "callouts": [
+      "Built Around Your Business",
+      "Human Review By Design",
+      "Thoughtful Data Handling",
+      "Support Beyond Launch",
+      "No Technical Brief Needed"
+    ],
+    "structuredSnippet": {
+      "header": "Services",
+      "values": ["Workflow Automation", "Custom AI Applications", "Business Websites"]
+    }
+  }
+}

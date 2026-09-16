@@ -6,6 +6,7 @@ import kodeMonoLatin from "@fontsource-variable/kode-mono/files/kode-mono-latin-
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import AdvertisingConsent from "../components/AdvertisingConsent.astro";
 import { siteContent } from "../content/site";
 import { siteConfig } from "../lib/site-config";
 import { brandImages, buildJsonLdGraph, canonicalPath, seoForPath, serializeJsonLd } from "../lib/seo";
@@ -102,5 +103,6 @@ const jsonLd = serializeJsonLd(buildJsonLdGraph(seoSite, Astro.url.pathname));
     <Header isHome={isHome} />
     <main id="main" aria-labelledby={mainLabelledBy}><slot /></main>
     <Footer />
+    <AdvertisingConsent />
   </body>
 </html>

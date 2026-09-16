@@ -27,6 +27,7 @@ test("invalid site modes do not silently publish", () => {
 
 test("fully supplied production configuration passes", () => {
   assert.deepEqual(validateProductionReadiness(configured, retention), []);
+  assert.deepEqual(validateProductionReadiness(configured, siteContent.privacy.retention), []);
 });
 
 test("production requires real contact details and explicit operating decisions", () => {

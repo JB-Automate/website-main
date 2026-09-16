@@ -1,4 +1,5 @@
 import { siteContent } from "../content/site.ts";
+import { serviceLandings } from "../content/ads.ts";
 
 /**
  * Every SEO fact the site publishes lives here, so metadata, structured data,
@@ -9,7 +10,7 @@ import { siteContent } from "../content/site.ts";
  * absent: invented values are the most common cause of a structured data penalty.
  */
 
-export type RoutePath = "/" | "/privacy/";
+export type RoutePath = "/" | "/workflow-automation/" | "/custom-ai-apps/" | "/privacy/";
 
 export interface SeoSite {
   /** Absolute https origin, no trailing slash. */
@@ -113,6 +114,22 @@ export const routeSeo: Record<
     updated: "2026-09-16",
     changefreq: "monthly",
     priority: "1.0",
+  },
+  "/workflow-automation/": {
+    title: serviceLandings.workflow.title,
+    description: serviceLandings.workflow.description,
+    ogType: "website",
+    updated: "2026-09-16",
+    changefreq: "monthly",
+    priority: "0.9",
+  },
+  "/custom-ai-apps/": {
+    title: serviceLandings.aiApps.title,
+    description: serviceLandings.aiApps.description,
+    ogType: "website",
+    updated: "2026-09-16",
+    changefreq: "monthly",
+    priority: "0.9",
   },
   "/privacy/": {
     title: "Privacy Notice | JB Automate",

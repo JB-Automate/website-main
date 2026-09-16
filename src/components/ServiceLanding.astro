@@ -1,0 +1,85 @@
+---
+import "../styles/service.css";
+import "../styles/home.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Contact from "./Contact.astro";
+import Icon from "./Icon.astro";
+import type { ServiceLandingContent } from "../content/ads";
+
+interface Props {
+  content: ServiceLandingContent;
+}
+
+const { content } = Astro.props;
+---
+
+<BaseLayout title={content.title} description={content.description} isHome={false}>
+  <div class="service-page">
+    <section class="service-hero container" aria-labelledby="service-heading">
+      <div class="service-hero-copy">
+        <p class="service-label">{content.label}</p>
+        <h1 id="service-heading">{content.heading[0]}<br /><span>{content.heading[1]}</span></h1>
+        <p class="service-lead">{content.introduction}</p>
+        <div class="service-actions">
+          <a class="button" href="#contact">{content.primaryAction}<Icon name="diagonal" size={17} /></a>
+          <a class="text-link" href="#examples">{content.secondaryAction}<Icon name="arrow" size={17} /></a>
+        </div>
+      </div>
+      <div class="service-brief" aria-label="How the work moves">
+        <div class="brief-note brief-note--input"><span>Today</span><strong>A repeated business task</strong></div>
+        <svg viewBox="0 0 520 260" aria-hidden="true">
+          <path d="M118 72 C210 72 178 188 292 188 C366 188 361 108 420 108" />
+          <circle cx="118" cy="72" r="5" />
+          <circle cx="292" cy="188" r="5" />
+          <circle cx="420" cy="108" r="5" />
+        </svg>
+        <div class="brief-note brief-note--review"><span>Designed in</span><strong>Context and review</strong></div>
+        <div class="brief-note brief-note--outcome"><span>Ready</span><strong>A useful next step</strong></div>
+      </div>
+    </section>
+
+    <section class="service-outcomes" aria-label="Expected outcomes">
+      <div class="container service-outcomes-grid">
+        {content.outcomes.map((outcome) => <article><h2>{outcome.title}</h2><p>{outcome.description}</p></article>)}
+      </div>
+    </section>
+
+    <section class="service-section container" id="examples" aria-labelledby="examples-heading">
+      <div class="service-section-intro">
+        <p class="service-label">Good starting points</p>
+        <h2 id="examples-heading">Start with one useful job.</h2>
+        <p>A focused first project makes the value, risks, and operating requirements easier to test.</p>
+      </div>
+      <div class="service-example-grid">
+        {content.examples.map((example, index) => <article><span aria-hidden="true">0{index + 1}</span><h3>{example.title}</h3><p>{example.description}</p></article>)}
+      </div>
+      <p class="service-disclosure">Illustrative starting points, not client systems or promised outcomes. The right scope depends on your process, information, and operating requirements.</p>
+    </section>
+
+    <section class="service-fit">
+      <div class="container service-fit-grid">
+        <div><p class="service-label">A useful fit</p><h2>A clear problem before a technical answer.</h2></div>
+        <ul>{content.fit.map((item) => <li><Icon name="check" size={19} /><span>{item}</span></li>)}</ul>
+      </div>
+    </section>
+
+    <section class="service-section container" aria-labelledby="process-heading">
+      <div class="service-section-intro service-section-intro--center">
+        <p class="service-label">How we work</p>
+        <h2 id="process-heading">From a difficult task to a working solution.</h2>
+      </div>
+      <ol class="service-process">
+        {content.process.map((step, index) => <li><span>0{index + 1}</span><h3>{step.title}</h3><p>{step.description}</p></li>)}
+      </ol>
+    </section>
+
+    <section class="service-faq container" aria-labelledby="service-faq-heading">
+      <div><p class="service-label">Questions before a first conversation</p><h2 id="service-faq-heading">What to expect.</h2></div>
+      <div class="service-faq-list">
+        {content.faqs.map((item) => <details name={`${content.slug}-faq`}><summary><span>{item.question}</span><Icon name="plus" size={19} /></summary><p>{item.answer}</p></details>)}
+      </div>
+    </section>
+
+    <Contact />
+  </div>
+</BaseLayout>

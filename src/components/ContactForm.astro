@@ -24,6 +24,15 @@ const config = getContactConfig({
   data-contact-available={String(config.available)}
   data-contact-email={siteConfig.email}
 >
+  <input type="hidden" name="source_page" value="" data-attribution="source_page" />
+  <input type="hidden" name="gclid" value="" data-attribution="gclid" />
+  <input type="hidden" name="gbraid" value="" data-attribution="gbraid" />
+  <input type="hidden" name="wbraid" value="" data-attribution="wbraid" />
+  <input type="hidden" name="utm_source" value="" data-attribution="utm_source" />
+  <input type="hidden" name="utm_medium" value="" data-attribution="utm_medium" />
+  <input type="hidden" name="utm_campaign" value="" data-attribution="utm_campaign" />
+  <input type="hidden" name="utm_term" value="" data-attribution="utm_term" />
+  <input type="hidden" name="utm_content" value="" data-attribution="utm_content" />
   <div class="form-row">
     <div class="form-field">
       <label class="sr-only" for="enquiry-name">Your name</label>
@@ -153,6 +162,27 @@ const config = getContactConfig({
     const defaultLabel = buttonLabel.textContent ?? "Send your enquiry";
     let pending = false;
     form.noValidate = true;
+
+    const attributionFields = Array.from(form.querySelectorAll<HTMLInputElement>("[data-attribution]"));
+
+    function applyAttribution() {
+      let attribution: Record<string, string> = {};
+      try {
+        if (localStorage.getItem("jb-ads-consent") === "granted") {
+          attribution = JSON.parse(sessionStorage.getItem("jb-ad-attribution") ?? "{}");
+        }
+      } catch {
+        attribution = {};
+      }
+      for (const field of attributionFields) {
+        const key = field.dataset.attribution;
+        if (!key) continue;
+        field.value = key === "source_page" ? window.location.pathname : attribution[key] ?? "";
+      }
+    }
+
+    applyAttribution();
+    window.addEventListener("jb:ads-consent", applyAttribution);
 
     function showErrors(errors: ContactFieldErrors = {}) {
       for (const name of CONTACT_FIELD_NAMES) {
@@ -303,6 +333,7 @@ const config = getContactConfig({
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 15_000);
       try {
+        applyAttribution();
         const response = await fetch("/api/contact", {
           method: "POST",
           mode: "same-origin",
@@ -328,12 +359,15 @@ const config = getContactConfig({
           return;
         }
         if (response.status === 200 && payload.ok === true && typeof payload.message === "string") {
+          const leadEmail = result.values.email;
           form.reset();
+          applyAttribution();
           showErrors();
           markSent();
           status.textContent = "";
           delete status.dataset.state;
           emailGuidance.hidden = true;
+          window.dispatchEvent(new CustomEvent("jb:lead-submitted", { detail: { email: leadEmail } }));
           alertText("Your enquiry has been sent.");
           return;
         }

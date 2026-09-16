@@ -83,6 +83,8 @@ Copy `.env.example` to `.env` for local configuration. Never commit `.env` or cr
 | `SITE_MODE` | `preview` by default; `production` enables production-readiness requirements. |
 | `PUBLIC_SITE_URL` | Real HTTPS site origin, without a path or credentials. |
 | `PUBLIC_CONTACT_EMAIL` | The public, visible contact address. |
+| `PUBLIC_GOOGLE_ADS_ID` | Optional Google Ads tag ID in the form `AW-...`. |
+| `PUBLIC_GOOGLE_ADS_CONVERSION_LABEL` | Optional lead-conversion label paired with the Ads tag ID. |
 | `RESEND_API_KEY` | Server-only Resend key. |
 | `CONTACT_FROM_EMAIL` | Plain sender email on the authenticated sending domain. |
 | `CONTACT_TO_EMAIL` | Fixed, server-only recipient. A visitor cannot choose it. |

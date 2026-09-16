@@ -40,6 +40,8 @@ jobs:
           # The form hands each enquiry to the visitor's own email application.
           ENQUIRY_DELIVERY: email_app
           PRIVACY_NOTICE_APPROVED: "true"
+          PUBLIC_GOOGLE_ADS_ID: ${{ vars.PUBLIC_GOOGLE_ADS_ID }}
+          PUBLIC_GOOGLE_ADS_CONVERSION_LABEL: ${{ vars.PUBLIC_GOOGLE_ADS_CONVERSION_LABEL }}
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

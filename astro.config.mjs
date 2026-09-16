@@ -22,13 +22,16 @@ export default defineConfig({
     csp: {
       directives: [
         "default-src 'self'",
-        "img-src 'self' data:",
+        "img-src 'self' data: https://www.google.com https://www.google.ca https://www.googleadservices.com https://googleads.g.doubleclick.net",
         "font-src 'self'",
-        "connect-src 'self'",
+        "connect-src 'self' https://www.google.com https://www.google.ca https://www.googleadservices.com https://googleads.g.doubleclick.net https://td.doubleclick.net",
         "object-src 'none'",
         "base-uri 'self'",
         "form-action 'self'",
       ],
+      scriptDirective: {
+        resources: ["'self'", "https://www.googletagmanager.com"],
+      },
     },
   },
 });

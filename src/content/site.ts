@@ -53,13 +53,13 @@ export const siteContent = {
     ],
   },
   work: {
-    label: "",
+    label: "Illustrative example",
     task: {
       label: "Prepare a follow-up",
       heading: "A follow-up, ready.",
       lines: ["Confirm the project goal.", "Arrange the next conversation."],
     },
-    note: "",
+    note: "Illustrative examples, not client systems. No business data is used or sent.",
   },
   comparison: {
     heading: ["A starting point is not", "the whole solution."],
@@ -120,7 +120,8 @@ export const siteContent = {
           "A responsible partner. Agreed maintenance, support, and escalation.",
       },
     ],
-    note: "",
+    note:
+      "This compares a one-off generated starting point with the delivery described here, not the full capabilities or enterprise offerings of Claude.",
   },
   security: {
     heading: ["Your trust is part", "of the brief."],
