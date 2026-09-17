@@ -35,9 +35,12 @@ jobs:
         env:
           PUBLIC_SITE_URL: https://jbautomate.ca
           PUBLIC_CONTACT_EMAIL: admin@jbautomate.ca
+          PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
           SITE_MODE: production
           # GitHub Pages serves static files only, so there is no delivery endpoint here.
-          # The form hands each enquiry to the visitor's own email application.
+          # A best-effort browser insert keeps the enquiry in Supabase before the existing
+          # email-app handoff. RLS allows anonymous INSERT only.
           ENQUIRY_DELIVERY: email_app
           PRIVACY_NOTICE_APPROVED: "true"
           PUBLIC_GOOGLE_ADS_ID: ${{ vars.PUBLIC_GOOGLE_ADS_ID }}

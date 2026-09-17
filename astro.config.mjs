@@ -1,8 +1,10 @@
 import { defineConfig } from "astro/config";
 import vercel from "@astrojs/vercel";
 import { loadEnv } from "vite";
+import { parsePublicSupabaseUrl } from "./src/lib/public-enquiry-config.ts";
 
 const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
+const supabaseOrigin = parsePublicSupabaseUrl(env.PUBLIC_SUPABASE_URL);
 
 export default defineConfig({
   site: env.PUBLIC_SITE_URL || "https://jbautomate.ca",
@@ -24,7 +26,7 @@ export default defineConfig({
         "default-src 'self'",
         "img-src 'self' data: https://www.google.com https://www.google.ca https://www.googleadservices.com https://googleads.g.doubleclick.net",
         "font-src 'self'",
-        "connect-src 'self' https://www.google.com https://www.google.ca https://www.googleadservices.com https://googleads.g.doubleclick.net https://td.doubleclick.net",
+        `connect-src 'self' https://www.google.com https://www.google.ca https://www.googleadservices.com https://googleads.g.doubleclick.net https://td.doubleclick.net${supabaseOrigin ? ` ${supabaseOrigin}` : ""}`,
         "object-src 'none'",
         "base-uri 'self'",
         "form-action 'self'",

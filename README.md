@@ -85,6 +85,8 @@ Copy `.env.example` to `.env` for local configuration. Never commit `.env` or cr
 | `PUBLIC_CONTACT_EMAIL` | The public, visible contact address. |
 | `PUBLIC_GOOGLE_ADS_ID` | Optional Google Ads tag ID in the form `AW-...`. |
 | `PUBLIC_GOOGLE_ADS_CONVERSION_LABEL` | Optional lead-conversion label paired with the Ads tag ID. |
+| `PUBLIC_SUPABASE_URL` | Public Supabase project origin used by static builds for best-effort enquiry capture. |
+| `PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Browser-safe `sb_publishable_...` key. Security comes from database grants and RLS, not secrecy. |
 | `RESEND_API_KEY` | Server-only Resend key. |
 | `CONTACT_FROM_EMAIL` | Plain sender email on the authenticated sending domain. |
 | `CONTACT_TO_EMAIL` | Fixed, server-only recipient. A visitor cannot choose it. |
@@ -101,7 +103,7 @@ The form collects name, email, optional business name, and a short description. 
 The form adapts to the deployment, and the privacy notice changes with it:
 
 - **With the endpoint** (`RESEND_API_KEY` and the rest configured): the browser posts to `src\pages\api\contact.ts`, which validates the request, emails it through Resend, and stores a copy when `DATABASE_URL` is set. The button confirms the enquiry was sent.
-- **Without the endpoint** (any static build, including GitHub Pages): nothing is posted anywhere. The button validates the fields, then opens the visitor's own email application with the details written out, and the entered values stay on the page. The button says the email was drafted, never that it was sent, because only the visitor can send it.
+- **Without the endpoint** (any static build, including GitHub Pages): after validation, the browser makes a best-effort insert into the Supabase enquiry table and immediately continues the existing email-app handoff. Capture success or failure never changes the visitor-facing form state. The button still says the email was drafted, never that it was sent, because only the visitor can send the email.
 
 Messages and provider delivery records may still be retained by the mailbox and providers; do not describe this as "no storage."
 
@@ -113,20 +115,20 @@ Storing is best effort and silent: it runs after the delivery attempt, never cha
 
 Run `npm run enquiries` to print the most recent copies, or `npm run enquiries -- 50` for more. Keep the database credentials out of version control, and delete stored copies in line with the retention practice published in the privacy notice.
 
-**Storage needs the endpoint.** A static deployment has no server, so it stores nothing: locally, copies are written while `npm run dev` is running, and in a deployment only if the site is hosted somewhere that runs `src\pages\api\contact.ts` with `DATABASE_URL` set.
+Endpoint storage still uses `DATABASE_URL`. Static GitHub Pages storage is separate: the browser writes directly to Supabase with a publishable key, and the `website_enquiries` table must allow `anon` INSERT while denying read/update/delete. The reference SQL is in `supabase/website_enquiries.sql`.
 
 Successful submission means the email provider accepted the message, not that a person has read it or that inbox delivery is guaranteed. Automated tests mock delivery and never send live email.
 
 ## Deploying to GitHub Pages
 
-`.github\workflows\deploy-pages.yml` builds the site and publishes the static output to Pages on the `jbautomate.ca` domain in `CNAME`. Pages serves files only: it cannot run the enquiry endpoint, hold a secret, or reach a database. The workflow therefore builds with `ENQUIRY_DELIVERY=email_app`, and the form uses the visitor's email application.
+`.github\workflows\deploy-pages.yml` builds the site and publishes the static output to Pages on the `jbautomate.ca` domain in `CNAME`. Pages serves files only, so the workflow uses `ENQUIRY_DELIVERY=email_app`. The browser writes valid enquiries directly to Supabase in the background with a publishable key, then uses the visitor's email application exactly as before. Configure `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_PUBLISHABLE_KEY` as GitHub Actions variables before deploying.
 
 To run the endpoint and store enquiries in a deployment, host the site somewhere that executes server code (the Vercel adapter is already configured), set the delivery variables plus `DATABASE_URL` there, leave `ENQUIRY_DELIVERY` at `server`, and configure the required hosting-level rate limit for **POST `/api/contact`**.
 
 ## Before public deployment
 
 1. Supply the actual domain and public contact address.
-2. Decide how enquiries arrive. For a static deployment set `ENQUIRY_DELIVERY=email_app` and skip steps 3 and 4. For the endpoint, authenticate a sending domain in Resend and configure its API key, sender, and recipient as server-side environment variables.
+2. Decide how enquiries arrive. For a static deployment set `ENQUIRY_DELIVERY=email_app`, create the Supabase table from `supabase/website_enquiries.sql`, and set the two public Supabase build variables; then skip steps 3 and 4. For the endpoint, authenticate a sending domain in Resend and configure its API key, sender, and recipient as server-side environment variables.
 3. Configure a platform-level rate-limiting rule for **POST `/api/contact`**. Use the hosting provider's firewall controls, a per-client/IP limit appropriate to genuine enquiries, and a blocking or throttling response. If the selected hosting plan does not support it, use a suitable upstream protection service before enabling the public form. Do not substitute an in-memory counter in the serverless function.
 4. Set `CONTACT_RATE_LIMIT_CONFIGURED=true` only after confirming the rule exists.
 5. Review the retention text in `src\content\site.ts` and the rest of the privacy page against the actual deployment, mailbox provider, and processors. Set `PRIVACY_NOTICE_APPROVED=true` only after that review.
@@ -142,7 +144,7 @@ Both marketing pages are pre-rendered; only the enquiry endpoint runs on demand.
 - Astro generates a content security policy with hashes for its scripts and styles.
 - `vercel.json` supplies framing, content-type, referrer, permissions, and HTTPS transport headers.
 - The contact endpoint validates and limits requests, checks the expected origin, and uses a honeypot. Deployment-level rate limiting is a separate, required operating responsibility.
-- Do not add request-body logging, email-address logging, public API keys, or detailed provider errors to the client.
+- Do not add request-body logging, email-address logging, secret API keys, or detailed provider errors to the client. Supabase publishable keys are intentionally public and must be constrained with grants and RLS.
 - Review failed delivery through sanitized operational logs and the provider's authorized dashboard. A website form is not a protected-data intake channel.
 - Client application hosting, support hours, escalation, monitoring, and maintenance are separate engagement-specific agreements.
 

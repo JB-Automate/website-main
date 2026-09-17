@@ -68,11 +68,13 @@ test("a static build without a delivery endpoint still requires a real address a
     ENQUIRY_DELIVERY: "email_app",
     PUBLIC_SITE_URL: "https://business-domain.ca",
     PUBLIC_CONTACT_EMAIL: "hello@business-domain.ca",
+    PUBLIC_SUPABASE_URL: "https://project-ref.supabase.co",
+    PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_1234567890abcdefghijkl",
     PRIVACY_NOTICE_APPROVED: "true",
   };
   assert.deepEqual(validateProductionReadiness(staticBuild, retention), []);
 
-  for (const [key, value] of [["PUBLIC_CONTACT_EMAIL", "hello@example.com"], ["PRIVACY_NOTICE_APPROVED", "false"]]) {
+  for (const [key, value] of [["PUBLIC_CONTACT_EMAIL", "hello@example.com"], ["PUBLIC_SUPABASE_URL", "http://project-ref.supabase.co"], ["PUBLIC_SUPABASE_PUBLISHABLE_KEY", "anon-key"], ["PRIVACY_NOTICE_APPROVED", "false"]]) {
     assert.ok(validateProductionReadiness({ ...staticBuild, [key]: value }, retention).length > 0, key);
   }
   assert.ok(validateProductionReadiness({ ...staticBuild }, "[DRAFT: unfinished]").some((error) => error.includes("retention")));

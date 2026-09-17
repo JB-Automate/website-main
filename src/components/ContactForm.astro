@@ -136,6 +136,7 @@ const config = getContactConfig({
 
 <script>
   import { CONTACT_FIELD_NAMES, mailtoHref, validateContactInput } from "../lib/contact-validation.ts";
+  import { captureStaticEnquiry } from "../lib/browser-enquiry-store.ts";
   import type { ContactFieldErrors, ContactFieldName, Enquiry } from "../lib/contact-validation.ts";
 
   function enhanceEnquiryForm() {
@@ -318,6 +319,7 @@ const config = getContactConfig({
       }
 
       if (!available) {
+        captureStaticEnquiry(result.values);
         if (draftEmail(result.values)) {
           announce("Your email app should now open with these details. Send it from there and it reaches us.", false, false);
           emailGuidance.hidden = false;

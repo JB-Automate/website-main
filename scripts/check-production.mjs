@@ -2,6 +2,7 @@ import { pathToFileURL } from "node:url";
 import { loadEnv } from "vite";
 import { siteContent } from "../src/content/site.ts";
 import { parseProductionEmail, parseProductionOrigin, parseResendApiKey } from "../src/lib/contact-config.ts";
+import { parsePublicSupabaseUrl, parseSupabasePublishableKey } from "../src/lib/public-enquiry-config.ts";
 
 /**
  * @param {Record<string, string | undefined>} env
@@ -28,6 +29,15 @@ export function validateProductionReadiness(env, retention) {
   }
   if (!parseProductionEmail(env.PUBLIC_CONTACT_EMAIL)) {
     errors.push("PUBLIC_CONTACT_EMAIL must be a real, plain email address, not a placeholder.");
+  }
+
+  if (delivery === "email_app") {
+    if (!parsePublicSupabaseUrl(env.PUBLIC_SUPABASE_URL)) {
+      errors.push("PUBLIC_SUPABASE_URL must be a real HTTPS Supabase project origin without a path, credentials, query, or fragment.");
+    }
+    if (!parseSupabasePublishableKey(env.PUBLIC_SUPABASE_PUBLISHABLE_KEY)) {
+      errors.push("PUBLIC_SUPABASE_PUBLISHABLE_KEY must be a Supabase sb_publishable_ key.");
+    }
   }
 
   if (delivery === "server") {
