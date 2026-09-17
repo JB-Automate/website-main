@@ -3,15 +3,15 @@ export const siteContent = {
   description:
     "Custom AI apps, automated workflows, and websites built around your business. Practical tools, thoughtful data handling, and support beyond launch.",
   navigation: [
-    { label: "What we do", href: "#services" },
-    { label: "Our approach", href: "#difference" },
-    { label: "Security & support", href: "#security" },
+    { label: "AI applications", href: "/custom-ai-apps/" },
+    { label: "Workflow automation", href: "/workflow-automation/" },
+    { label: "About", href: "/about/" },
   ],
   primaryAction: "Tell us what you need",
   hero: {
-    heading: ["Put AI to work.", "On your terms."],
+    heading: ["Custom AI apps and", "workflow automation."],
     description:
-      "AI apps, connected workflows, and websites built for your business. Thoughtful about your data. Supported beyond launch.",
+      "Focused AI applications and connected business workflows, built around your team. Thoughtful about your data. Supported beyond launch.",
     secondaryAction: "See it in action",
   },
   proof: {
@@ -20,6 +20,19 @@ export const siteContent = {
       "Building internal, in-house AI applications that support branch operations.",
     // Add only an approved, attributable outcome; never fill this with an invented number.
     verifiedOutcome: null as { value: string; context: string } | null,
+  },
+  about: {
+    heading: ["AI and automation,", "built around your work."],
+    introduction:
+      "JB Automate builds focused AI applications and connected workflows around the way an organization actually works.",
+    approach:
+      "We start with the business task, the people responsible for it, and the information it requires. Then we design the smallest useful solution, test realistic failure cases, and agree how it will be supported after launch.",
+    responsibility:
+      "AI output still needs ownership. We make review steps, data boundaries, access, and operating responsibilities part of the work instead of leaving them for after deployment.",
+    experience:
+      "JB Automate works directly with the Government of Alberta, building internal, in-house AI applications that support branch operations.",
+    disclosure:
+      "This is a factual description of the working relationship. It does not imply Government of Alberta endorsement, and confidential project details are not published.",
   },
   services: {
     heading: ["Less busywork.", "More room for business."],

@@ -16,7 +16,9 @@ test("the shared layout installs one Google tag for every page", async () => {
 test("paid search has one focused landing page per launch offer", () => {
   assert.equal(serviceLandings.workflow.slug, "workflow-automation");
   assert.equal(serviceLandings.aiApps.slug, "custom-ai-apps");
-  assert.match(serviceLandings.workflow.description, /Alberta businesses/);
+  assert.match(serviceLandings.workflow.title, /Workflow Automation/);
+  assert.match(serviceLandings.aiApps.title, /Custom AI App Development/);
+  assert.match(serviceLandings.workflow.description, /workflow automation/i);
   assert.match(serviceLandings.aiApps.description, /internal AI tools/);
   for (const page of Object.values(serviceLandings)) {
     assert.equal(page.outcomes.length, 3);

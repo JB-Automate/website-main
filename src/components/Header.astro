@@ -7,16 +7,16 @@ interface Props {
   isHome?: boolean;
 }
 const { isHome = true } = Astro.props;
-const anchor = (href: string) => (isHome ? href : `/${href}`);
+const destination = (href: string) => href.startsWith("#") && !isHome ? `/${href}` : href;
 ---
 
 <header class="site-header">
   <div class="container header-inner">
     <Brand />
     <nav class="desktop-nav" aria-label="Main navigation">
-      {siteContent.navigation.map((item) => <a href={anchor(item.href)}>{item.label}</a>)}
+      {siteContent.navigation.map((item) => <a href={destination(item.href)}>{item.label}</a>)}
     </nav>
-    <a class="button button--small header-cta" href={anchor("#contact")}>
+    <a class="button button--small header-cta" href={destination("#contact")}>
       {siteContent.primaryAction}<Icon name="diagonal" size={16} />
     </a>
     <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-navigation" aria-label="Open navigation">
@@ -24,13 +24,13 @@ const anchor = (href: string) => (isHome ? href : `/${href}`);
     </button>
   </div>
   <nav id="mobile-navigation" class="mobile-nav" aria-label="Mobile navigation" hidden>
-    {siteContent.navigation.map((item) => <a href={anchor(item.href)}>{item.label}</a>)}
-    <a href={anchor("#contact")}>{siteContent.primaryAction}<Icon name="diagonal" size={18} /></a>
+    {siteContent.navigation.map((item) => <a href={destination(item.href)}>{item.label}</a>)}
+    <a href={destination("#contact")}>{siteContent.primaryAction}<Icon name="diagonal" size={18} /></a>
   </nav>
   <noscript>
     <nav class="mobile-nav mobile-nav-fallback" aria-label="Mobile navigation">
-      {siteContent.navigation.map((item) => <a href={anchor(item.href)}>{item.label}</a>)}
-      <a href={anchor("#contact")}>{siteContent.primaryAction}</a>
+      {siteContent.navigation.map((item) => <a href={destination(item.href)}>{item.label}</a>)}
+      <a href={destination("#contact")}>{siteContent.primaryAction}</a>
     </nav>
   </noscript>
 </header>

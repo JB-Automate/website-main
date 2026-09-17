@@ -11,12 +11,16 @@ interface Props {
 }
 
 const { content } = Astro.props;
+const relatedService = content.slug === "workflow-automation"
+  ? { href: "/custom-ai-apps/", label: "Custom AI application development" }
+  : { href: "/workflow-automation/", label: "Workflow automation" };
 ---
 
-<BaseLayout title={content.title} description={content.description} isHome={false}>
+<BaseLayout title={content.title} description={content.description} isHome={false} mainLabelledBy="service-heading">
   <div class="service-page">
     <section class="service-hero container" aria-labelledby="service-heading">
       <div class="service-hero-copy">
+        <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">{content.label}</span></nav>
         <p class="service-label">{content.label}</p>
         <h1 id="service-heading">{content.heading[0]}<br /><span>{content.heading[1]}</span></h1>
         <p class="service-lead">{content.introduction}</p>
@@ -77,6 +81,22 @@ const { content } = Astro.props;
       <div><p class="service-label">Questions before a first conversation</p><h2 id="service-faq-heading">What to expect.</h2></div>
       <div class="service-faq-list">
         {content.faqs.map((item) => <details name={`${content.slug}-faq`}><summary><span>{item.question}</span><Icon name="plus" size={19} /></summary><p>{item.answer}</p></details>)}
+      </div>
+    </section>
+
+    <section class="service-related" aria-labelledby="service-related-heading">
+      <div class="container service-related-grid">
+        <div>
+          <p class="service-label">Related services</p>
+          <h2 id="service-related-heading">One useful project can start small.</h2>
+        </div>
+        <div>
+          <p>Engagements can begin with one clearly owned business task, without requiring a large transformation program. Explore an adjacent service or learn how JB Automate approaches delivery and support.</p>
+          <nav aria-label="Related services">
+            <a class="text-link" href={relatedService.href}>{relatedService.label}<Icon name="arrow" size={18} /></a>
+            <a class="text-link" href="/about/">About JB Automate<Icon name="arrow" size={18} /></a>
+          </nav>
+        </div>
       </div>
     </section>
 

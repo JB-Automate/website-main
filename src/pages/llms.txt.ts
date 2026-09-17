@@ -1,6 +1,6 @@
 import { siteContent } from "../content/site";
 import { siteConfig } from "../lib/site-config";
-import { knowsAbout, serviceArea, serviceNames } from "../lib/seo";
+import { knowsAbout, serviceNames } from "../lib/seo";
 
 /**
  * /llms.txt is the emerging convention for telling AI answer engines what a site is
@@ -14,20 +14,24 @@ export function GET() {
 
   const base = siteConfig.url.replace(/\/+$/, "");
   const { services, faq, process, security, contact } = siteContent;
+  const serviceUrls: Record<string, string> = {
+    apps: `${base}/custom-ai-apps/`,
+    workflows: `${base}/workflow-automation/`,
+    websites: `${base}/#services`,
+  };
 
   const body = [
     `# ${siteContent.name}`,
     "",
     `> ${siteContent.description}`,
     "",
-    `${siteContent.name} builds custom AI applications, automated workflows, and websites for businesses in ` +
-      `${serviceArea.city}, ${serviceArea.region}, ${serviceArea.country}, and supports them after launch. ` +
+    `${siteContent.name} builds custom AI applications, automated workflows, and websites around the way a business works, and supports them after launch. ` +
       `${siteContent.proof.heading} ${siteContent.proof.description}`,
     "",
     "## Services",
     "",
     ...services.items.map(
-      (service) => `- [${serviceNames[service.id]?.name ?? service.label}](${base}/#services): ${service.description}`,
+      (service) => `- [${serviceNames[service.id]?.name ?? service.label}](${serviceUrls[service.id] ?? `${base}/#services`}): ${service.description}`,
     ),
     "",
     "## How an engagement works",
@@ -50,6 +54,7 @@ export function GET() {
     `- [Enquiry form](${base}/#contact): ${contact.description} ${contact.nextStep}`,
     ...(siteConfig.hasPublicEmail ? [`- Email: ${siteConfig.email}`] : []),
     `- [Privacy notice](${base}/privacy/): How enquiry information is collected, used, retained, and deleted.`,
+    `- [About JB Automate](${base}/about/): Delivery approach and relevant experience.`,
     "",
   ].join("\n");
 

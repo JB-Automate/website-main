@@ -10,7 +10,7 @@ import { serviceLandings } from "../content/ads.ts";
  * absent: invented values are the most common cause of a structured data penalty.
  */
 
-export type RoutePath = "/" | "/workflow-automation/" | "/custom-ai-apps/" | "/privacy/";
+export type RoutePath = "/" | "/workflow-automation/" | "/custom-ai-apps/" | "/about/" | "/privacy/";
 
 export interface SeoSite {
   /** Absolute https origin, no trailing slash. */
@@ -36,14 +36,6 @@ export const sameAs: readonly string[] = [];
 
 /** Names the business is genuinely known by, beyond its full name. */
 export const alternateNames = ["JB", "JBAutomate"] as const;
-
-export const serviceArea = {
-  city: "Edmonton",
-  region: "Alberta",
-  regionCode: "AB",
-  country: "Canada",
-  countryCode: "CA",
-} as const;
 
 /** Subjects the business actually works in. These drive topical entity association. */
 export const knowsAbout = [
@@ -107,9 +99,9 @@ export const routeSeo: Record<
   { title: string; description: string; ogType: string; updated: string; changefreq: string; priority: string }
 > = {
   "/": {
-    title: "JB Automate | AI Apps & Workflow Automation",
+    title: "Custom AI Apps & Workflow Automation | JB Automate",
     description:
-      "JB Automate builds custom AI apps, automated workflows, and websites for businesses in Edmonton, Alberta. Practical AI, supported beyond launch.",
+      "JB Automate builds focused AI applications, connected workflows, and websites around the way your business works, with thoughtful data handling and support.",
     ogType: "website",
     updated: "2026-09-16",
     changefreq: "monthly",
@@ -130,6 +122,15 @@ export const routeSeo: Record<
     updated: "2026-09-16",
     changefreq: "monthly",
     priority: "0.9",
+  },
+  "/about/": {
+    title: "About JB Automate | AI Apps & Automation",
+    description:
+      "Learn how JB Automate approaches custom AI applications and workflow automation, from defining the business task and data boundaries to support after launch.",
+    ogType: "website",
+    updated: "2026-09-17",
+    changefreq: "yearly",
+    priority: "0.7",
   },
   "/privacy/": {
     title: "Privacy Notice | JB Automate",
@@ -217,18 +218,6 @@ export function serializeJsonLd(value: unknown): string {
     .replace(/\u2029/g, "\\u2029");
 }
 
-function areaServed() {
-  return [
-    {
-      "@type": "City",
-      name: serviceArea.city,
-      containedInPlace: { "@type": "State", name: serviceArea.region },
-    },
-    { "@type": "State", name: serviceArea.region },
-    { "@type": "Country", name: serviceArea.country },
-  ];
-}
-
 /**
  * Builds one connected @graph for a page. Cross-referenced @id values let search
  * engines resolve a single organisation rather than several disconnected records.
@@ -243,6 +232,13 @@ export function buildJsonLdGraph(site: SeoSite, pathname: string) {
   const logoId = `${base}/#logo`;
   const pageId = `${pageUrl}#webpage`;
   const isHome = path === "/";
+  const servicePage =
+    path === "/workflow-automation/"
+      ? { id: "workflows", content: serviceLandings.workflow }
+      : path === "/custom-ai-apps/"
+        ? { id: "apps", content: serviceLandings.aiApps }
+        : null;
+  const pageServiceId = servicePage ? `${pageUrl}#service` : null;
 
   const logo = {
     "@type": "ImageObject",
@@ -267,14 +263,12 @@ export function buildJsonLdGraph(site: SeoSite, pathname: string) {
     slogan: `${siteContent.hero.heading[0]} ${siteContent.hero.heading[1]}`,
     email: site.email ?? undefined,
     knowsAbout: [...knowsAbout],
-    areaServed: areaServed(),
     sameAs: sameAs.length ? [...sameAs] : undefined,
     contactPoint: site.email
       ? {
           "@type": "ContactPoint",
           contactType: "sales",
           email: site.email,
-          areaServed: serviceArea.countryCode,
           availableLanguage: { "@type": "Language", name: "English" },
         }
       : undefined,
@@ -331,8 +325,35 @@ export function buildJsonLdGraph(site: SeoSite, pathname: string) {
       caption: brandImages.social.alt,
     },
     breadcrumb: { "@id": `${pageUrl}#breadcrumb` },
+    mainEntity: pageServiceId ? { "@id": pageServiceId } : undefined,
     inLanguage: "en-CA",
   };
+
+  const servicePageNodes = servicePage
+    ? [
+        {
+          "@type": "Service",
+          "@id": pageServiceId,
+          name: serviceNames[servicePage.id]?.name ?? servicePage.content.label,
+          serviceType: serviceNames[servicePage.id]?.serviceType ?? servicePage.content.label,
+          description: servicePage.content.description,
+          provider: { "@id": orgId },
+          url: pageUrl,
+          mainEntityOfPage: { "@id": pageId },
+        },
+        {
+          "@type": "FAQPage",
+          "@id": `${pageUrl}#faq`,
+          isPartOf: { "@id": pageId },
+          inLanguage: "en-CA",
+          mainEntity: servicePage.content.faqs.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: { "@type": "Answer", text: item.answer },
+          })),
+        },
+      ]
+    : [];
 
   const homeOnly = isHome
     ? [
@@ -343,7 +364,6 @@ export function buildJsonLdGraph(site: SeoSite, pathname: string) {
           serviceType: serviceNames[service.id]?.serviceType ?? service.label,
           description: service.description,
           provider: { "@id": orgId },
-          areaServed: areaServed(),
           url: `${base}/#services`,
         })),
         {
@@ -362,6 +382,6 @@ export function buildJsonLdGraph(site: SeoSite, pathname: string) {
 
   return {
     "@context": "https://schema.org",
-    "@graph": [organization, logo, website, webPage, breadcrumb, ...homeOnly],
+    "@graph": [organization, logo, website, webPage, breadcrumb, ...homeOnly, ...servicePageNodes],
   };
 }

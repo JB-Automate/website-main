@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
+import { serviceLandings } from "../src/content/ads.ts";
 import { siteContent } from "../src/content/site.ts";
 import {
   absoluteUrl,
@@ -192,8 +193,7 @@ test("the organisation is described well enough to be resolved as an entity", ()
   assert.deepEqual(organization.alternateName, [...alternateNames]);
   assert.ok((organization.alternateName as string[]).includes("JB"));
   assert.deepEqual(organization.knowsAbout, [...knowsAbout]);
-  const areas = JSON.stringify(organization.areaServed);
-  assert.ok(areas.includes("Edmonton") && areas.includes("Alberta") && areas.includes("Canada"));
+  assert.ok(!("areaServed" in organization), "the site must not imply a geographically limited service area");
 
   // The logo is its own node so both logo and image can point at one image record.
   assert.deepEqual(organization.logo, { "@id": "https://jbautomate.ca/#logo" });
@@ -243,6 +243,48 @@ test("FAQ structured data mirrors the questions actually on the page", () => {
   });
   // Only the page that renders the FAQ may claim it.
   assert.equal(nodesOfType("/privacy/", "FAQPage").length, 0);
+});
+
+test("each service landing publishes page-specific service and FAQ data", () => {
+  const pages = [
+    { path: "/workflow-automation/", id: "workflows", content: serviceLandings.workflow },
+    { path: "/custom-ai-apps/", id: "apps", content: serviceLandings.aiApps },
+  ] as const;
+
+  for (const { path, id, content } of pages) {
+    const service = nodesOfType(path, "Service")[0];
+    assert.equal(service["@id"], `https://jbautomate.ca${path}#service`);
+    assert.equal(service.name, serviceNames[id].name);
+    assert.equal(service.url, `https://jbautomate.ca${path}`);
+    assert.deepEqual(service.provider, { "@id": "https://jbautomate.ca/#organization" });
+
+    const faq = nodesOfType(path, "FAQPage")[0];
+    const questions = faq.mainEntity as { name: string }[];
+    assert.deepEqual(questions.map((question) => question.name), content.faqs.map((item) => item.question));
+
+    const page = nodesOfType(path, "WebPage")[0];
+    assert.deepEqual(page.mainEntity, { "@id": `https://jbautomate.ca${path}#service` });
+  }
+});
+
+test("primary navigation links directly to every commercial page and the about page", () => {
+  const destinations: readonly string[] = siteContent.navigation.map((item) => item.href);
+  for (const path of ["/custom-ai-apps/", "/workflow-automation/", "/about/"]) {
+    assert.ok(destinations.includes(path), `${path} is missing from primary navigation`);
+    assert.ok(indexableRoutes.includes(path as never), `${path} is not indexable`);
+  }
+});
+
+test("commercial metadata and headings do not region-lock the services", () => {
+  const regionalTargeting = /\b(Edmonton|Alberta)\b/i;
+  for (const path of ["/", "/custom-ai-apps/", "/workflow-automation/", "/about/"] as const) {
+    assert.doesNotMatch(routeSeo[path].title, regionalTargeting, path);
+    assert.doesNotMatch(routeSeo[path].description, regionalTargeting, path);
+  }
+  for (const page of Object.values(serviceLandings)) {
+    assert.doesNotMatch(page.heading.join(" "), regionalTargeting);
+    assert.doesNotMatch(page.introduction, regionalTargeting);
+  }
 });
 
 test("breadcrumbs describe the real path to each page", () => {

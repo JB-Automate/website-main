@@ -18,10 +18,10 @@ export const serviceLandings: Record<"workflow" | "aiApps", ServiceLandingConten
   workflow: {
     slug: "workflow-automation",
     label: "Workflow automation",
-    title: "Workflow automation for Alberta businesses | JB Automate",
+    title: "Workflow Automation Services | JB Automate",
     description:
-      "Custom workflow automation for Alberta businesses. Connect routine steps, reduce manual handoffs, and keep people in control of important decisions.",
-    heading: ["Make the handoffs", "between your tools work."],
+      "Custom workflow automation that connects routine steps, reduces manual handoffs, and keeps people in control of important business decisions after launch.",
+    heading: ["Workflow automation", "built around your business."],
     introduction:
       "We build practical automations around the way your team already works—so requests move, information gets prepared, and the right person knows what to do next.",
     primaryAction: "Discuss your workflow",
@@ -104,10 +104,10 @@ export const serviceLandings: Record<"workflow" | "aiApps", ServiceLandingConten
   aiApps: {
     slug: "custom-ai-apps",
     label: "Custom AI applications",
-    title: "Custom AI applications for Alberta businesses | JB Automate",
+    title: "Custom AI App Development | JB Automate",
     description:
-      "Focused internal AI tools built around your business context, review requirements, and data boundaries—with support beyond launch.",
-    heading: ["Turn repeatable expertise", "into a focused AI tool."],
+      "Focused internal AI tools built around your business context, review requirements, and data boundaries, with practical deployment and ongoing support.",
+    heading: ["Custom AI applications", "built for real work."],
     introduction:
       "We turn a well-defined business task into an application your team can use without prompt-engineering homework. Context, instructions, safeguards, and review are designed into the experience.",
     primaryAction: "Plan an AI tool",
