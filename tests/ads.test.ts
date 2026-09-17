@@ -5,6 +5,14 @@ import { serviceLandings } from "../src/content/ads.ts";
 
 const launch = JSON.parse(await readFile(new URL("../ads/google-ads-launch.json", import.meta.url), "utf8"));
 
+test("the shared layout installs one Google tag for every page", async () => {
+  const layout = await readFile(new URL("../src/layouts/BaseLayout.astro", import.meta.url), "utf8");
+  const consent = await readFile(new URL("../src/components/AdvertisingConsent.astro", import.meta.url), "utf8");
+  assert.equal(layout.match(/googletagmanager\.com\/gtag\/js\?id=AW-18455975650/g)?.length, 1);
+  assert.equal(layout.match(/gtag\("config", "AW-18455975650"\)/g)?.length, 1);
+  assert.doesNotMatch(consent, /createElement\("script"\)|googletagmanager\.com\/gtag\/js/);
+});
+
 test("paid search has one focused landing page per launch offer", () => {
   assert.equal(serviceLandings.workflow.slug, "workflow-automation");
   assert.equal(serviceLandings.aiApps.slug, "custom-ai-apps");

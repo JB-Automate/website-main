@@ -22,18 +22,6 @@ import { siteConfig } from "../lib/site-config";
       const attributionKey = "jb-ad-attribution";
       const allowedAttribution = ["gclid", "gbraid", "wbraid", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
       const banner = document.querySelector("[data-consent-banner]");
-      let loaded = false;
-
-      window.dataLayer = window.dataLayer || [];
-      function gtag() { window.dataLayer.push(arguments); }
-      window.gtag = window.gtag || gtag;
-      window.gtag("consent", "default", {
-        ad_storage: "denied",
-        ad_user_data: "denied",
-        ad_personalization: "denied",
-        analytics_storage: "denied",
-        wait_for_update: 500,
-      });
 
       function rememberAttribution() {
         const params = new URLSearchParams(window.location.search);
@@ -48,17 +36,6 @@ import { siteConfig } from "../lib/site-config";
         sessionStorage.setItem(attributionKey, JSON.stringify(existing));
       }
 
-      function loadGoogleTag() {
-        if (loaded) return;
-        loaded = true;
-        const script = document.createElement("script");
-        script.async = true;
-        script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(adsId)}`;
-        document.head.append(script);
-        window.gtag("js", new Date());
-        window.gtag("config", adsId);
-      }
-
       function applyChoice(choice) {
         localStorage.setItem(storageKey, choice);
         const granted = choice === "granted";
@@ -70,7 +47,6 @@ import { siteConfig } from "../lib/site-config";
         });
         if (granted) {
           rememberAttribution();
-          loadGoogleTag();
         } else {
           sessionStorage.removeItem(attributionKey);
         }
@@ -91,7 +67,6 @@ import { siteConfig } from "../lib/site-config";
         let choice = null;
         try { choice = localStorage.getItem(storageKey); } catch {}
         if (choice !== "granted" || !event.detail?.email) return;
-        loadGoogleTag();
         window.gtag("set", "user_data", { email: event.detail.email });
         window.gtag("event", "conversion", { send_to: `${adsId}/${conversionLabel}` });
       });

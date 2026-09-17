@@ -43,6 +43,21 @@ const jsonLd = serializeJsonLd(buildJsonLdGraph(seoSite, Astro.url.pathname));
 <!doctype html>
 <html lang="en-CA" dir="ltr">
   <head>
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=AW-18455975650"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag("consent", "default", {
+        ad_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
+        analytics_storage: "denied",
+        wait_for_update: 500,
+      });
+      gtag("js", new Date());
+      gtag("config", "AW-18455975650");
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f8f7f2" />
