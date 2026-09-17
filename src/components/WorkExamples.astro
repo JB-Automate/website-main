@@ -35,7 +35,7 @@ const serviceHref = (id: string) => id === "apps" ? "/custom-ai-apps/" : id === 
                 <p class="review-note">Ready for your review.</p>
               </div>
             </div>
-            <figcaption class="scene-caption"><span>{service.label}</span><span>{work.label}</span></figcaption>
+            <figcaption class="scene-caption"><span>{service.label}</span></figcaption>
           </figure>
         )}
 
@@ -49,7 +49,7 @@ const serviceHref = (id: string) => id === "apps" ? "/custom-ai-apps/" : id === 
                 <li class="route-card route-review" data-motion="route-review"><span aria-hidden="true">03</span><strong>You<br />decide.</strong></li>
               </ol>
             </div>
-            <figcaption class="scene-caption"><span>{service.label}</span><span>{work.label}</span></figcaption>
+            <figcaption class="scene-caption"><span>{service.label}</span></figcaption>
           </figure>
         )}
 
@@ -65,13 +65,10 @@ const serviceHref = (id: string) => id === "apps" ? "/custom-ai-apps/" : id === 
                 <div class="website-rule" aria-hidden="true"></div>
               </div>
             </div>
-            <figcaption class="scene-caption"><span>{service.label}</span><span>{work.label}</span></figcaption>
+            <figcaption class="scene-caption"><span>{service.label}</span></figcaption>
           </figure>
         )}
       </div>
     </article>
   ))}
-  <div class="container">
-    <p class="example-note">{work.note}</p>
-  </div>
 </div>

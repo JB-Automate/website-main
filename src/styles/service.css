@@ -40,7 +40,6 @@
   .service-example-grid article > span, .service-process li > span { color: var(--blue); font-family: var(--font-brand); font-size: 15px; }
   .service-example-grid h3 { margin-top: 48px; font-size: 29px; }
   .service-example-grid p { max-width: 470px; margin-top: 14px; color: var(--muted); font-size: 17px; line-height: 1.8; }
-  .service-disclosure { margin-top: 24px; color: var(--muted); font-size: 14px; line-height: 1.8; }
 
   .service-fit { padding-block: 96px; background: var(--ink); color: white; }
   .service-fit-grid { display: grid; grid-template-columns: .92fr 1.08fr; gap: clamp(54px, 8vw, 130px); }

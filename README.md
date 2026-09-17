@@ -32,7 +32,7 @@ The Vercel adapter does not support `astro preview`, so the preview command uses
 
 ## Editing the site
 
-Most business copy lives in `src\content\site.ts`: the hero, services, proof statement, illustrative examples, comparison rows, support wording, FAQs, and privacy retention text.
+Most business copy lives in `src\content\site.ts`: the hero, services, proof statement, example scenes, comparison rows, support wording, FAQs, and privacy retention text.
 
 - `src\styles\global.css`: shared colors, typography, navigation, footer, and privacy-page styling.
 - `src\styles\home.css`: homepage composition, illustration styling, and responsive layouts.
@@ -60,7 +60,7 @@ Scrolling assembles the opening and reveals each service outcome; no replay, run
 
 Service animations wait until the artwork is substantially in view, then progress evenly as its center moves through the viewport. Their timing is separate from the hero and the background line drawings.
 
-The examples use fixed sample content: no AI request is made and no business data is sent. Reduced-motion preferences show the finished artwork in normal page flow, including when the preference changes during a visit. Without JavaScript or the required animation APIs, every service and outcome remains visible as static content. Keep these fallbacks and the example disclosure when editing the presentation.
+The examples use fixed sample content: no AI request is made and no business data is sent. Reduced-motion preferences show the finished artwork in normal page flow, including when the preference changes during a visit. Without JavaScript or the required animation APIs, every service and outcome remains visible as static content. Keep these fallbacks when editing the presentation.
 
 The controller batches active-scene updates into animation frames, stops observing on page exit, and restores on back/forward navigation. Scroll and hover use separate artwork layers. Avoid adding independent timers or competing transform animations to the scene components.
 
@@ -68,9 +68,9 @@ The controller batches active-scene updates into animation frames, stops observi
 
 The Government of Alberta reference is the authorized **text-only relationship statement**. Do not add its logo, imply endorsement, or expose confidential details. `proof.verifiedOutcome` is empty until a verified, approved result and its context are supplied.
 
-Product illustrations are visibly labeled concepts, not real client screenshots. Keep those labels unless replacing them with approved actual work.
+Product illustrations are original concept artwork, not real client screenshots. Do not replace them with real client work without approval.
 
-The Claude comparison describes a one-off generated starting point versus a delivered service. It does not claim that Claude's enterprise offerings lack security or privacy. Keep the comparison's scope note visible.
+The Claude comparison describes a one-off generated starting point versus a delivered service. It does not claim that Claude's enterprise offerings lack security or privacy.
 
 Describe support according to the actual engagement. This site does not promise blanket round-the-clock availability, a fixed response time, compliance certification, flawless AI output, or suitability for every category of protected data.
 
