@@ -31,8 +31,6 @@ export const siteContent = {
       "AI output still needs ownership. We make review steps, data boundaries, access, and operating responsibilities part of the work instead of leaving them for after deployment.",
     experience:
       "JB Automate works directly with the Government of Alberta, building internal, in-house AI applications that support branch operations.",
-    disclosure:
-      "This is a factual description of the working relationship. It does not imply Government of Alberta endorsement, and confidential project details are not published.",
   },
   services: {
     heading: ["Less busywork.", "More room for business."],
@@ -66,13 +64,11 @@ export const siteContent = {
     ],
   },
   work: {
-    label: "Illustrative example",
     task: {
       label: "Prepare a follow-up",
       heading: "A follow-up, ready.",
       lines: ["Confirm the project goal.", "Arrange the next conversation."],
     },
-    note: "Illustrative examples, not client systems. No business data is used or sent.",
   },
   comparison: {
     heading: ["A starting point is not", "the whole solution."],
@@ -133,8 +129,6 @@ export const siteContent = {
           "A responsible partner. Agreed maintenance, support, and escalation.",
       },
     ],
-    note:
-      "This compares a one-off generated starting point with the delivery described here, not the full capabilities or enterprise offerings of Claude.",
   },
   security: {
     heading: ["Your trust is part", "of the brief."],
@@ -163,7 +157,6 @@ export const siteContent = {
           "An agreed plan for maintenance, support, and what happens when something needs attention.",
       },
     ],
-    note: "",
   },
   process: {
     heading: "You bring the business need.",

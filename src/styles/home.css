@@ -72,13 +72,11 @@
   .service-art { min-width: 0; width: 100%; margin: 0; }
   .scene-caption { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; padding-top: 20px; border-top: 1px solid #c9d0cc; }
   .scene-caption > span:first-child { font-size: 20px; font-weight: 500; letter-spacing: -.025em; }
-  .scene-caption > span:last-child { color: var(--muted); font-size: 14px; }
   .chapter-workflows { background: #ecefe9; margin-block: 18px; padding-block: 84px; }
   .chapter-workflows .chapter-layout { grid-template-columns: 1.15fr .85fr; }
   .chapter-workflows .service-copy { grid-column: 2; grid-row: 1; }
   .chapter-workflows .service-art { grid-column: 1; grid-row: 1; }
   .chapter-websites { padding-block: 86px 58px; }
-  .example-note { margin: 24px 0 0; padding: 25px 0 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; line-height: 1.8; text-align: center; }
 
   .app-scene-stage { position: relative; height: 480px; isolation: isolate; }
   .papers-art { position: absolute; inset: 0; z-index: -1; }
@@ -142,7 +140,6 @@
   .comparison-table tbody tr { transition: background .25s; }
   .comparison-table tbody tr:hover { background: #efefe7; }
   .mobile-column-label { display: none; }
-  .comparison-note { max-width: 1000px; margin-top: 25px; color: var(--muted); font-size: 14px; line-height: 1.8; }
 
   .security-section { padding-block: 96px 40px; color: #f4f7f6; background: #172d39; }
   .security-intro { display: block; text-align: center; }
@@ -158,7 +155,6 @@
   .security-points h3 { max-width: 440px; font-size: 27px; font-weight: 500; line-height: 1.3; letter-spacing: -.03em; }
   .security-points p { max-width: 500px; margin-top: 13px; color: #c0cfd6; font-size: 17px; line-height: 1.8; }
   [data-focus="data"] [data-layer-description="data"], [data-focus="access"] [data-layer-description="access"], [data-focus="support"] [data-layer-description="support"] { border-top-color: #aec3ff; }
-  .security-note { margin-top: 38px; padding-top: 26px; border-top: 1px solid #415763; color: #bfced5; font-size: 14px; line-height: 1.8; text-align: center; }
 
   .process-section > h2 { max-width: 950px; }
   .process-journey { position: relative; margin-top: 18px; }
@@ -183,7 +179,7 @@
   .contact-section { padding-bottom: 70px; }
   .contact-panel { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 100px; padding: 76px 0 30px; border: 0; border-top: 1px solid #a8b6ba; border-radius: 0; background: transparent; }
   .contact-intro { padding-top: 12px; }
-  .home-page .contact-intro h2 { font-size: clamp(46px, 4.5vw, 64px); }
+  main .contact-intro h2 { font-size: clamp(46px, 4.5vw, 64px); }
   .contact-description { max-width: 435px; margin-top: 30px; color: var(--muted); font-size: 19px; line-height: 1.8; }
   .contact-next { max-width: 420px; margin-top: 25px; color: var(--muted); font-size: 17px; }
   .contact-email { margin-top: 50px; }
@@ -359,7 +355,6 @@
     .chapter-websites { padding-block: 45px 29px; }
     .scene-caption { gap: 12px; padding-top: 17px; }
     .scene-caption > span:first-child { font-size: 18px; }
-    .scene-caption > span:last-child { font-size: 14px; }
     .app-scene-stage { height: 448px; }
     .task-slip { left: 1%; top: 17px; width: 87%; padding: 19px; }
     .task-slip > p { font-size: 18px; }
@@ -387,7 +382,6 @@
     .website-composition h4 { font-size: 33px; }
     .website-composition p { max-width: 152px; margin-top: 23px; font-size: 16px; }
     .website-art { right: -35px; bottom: -33px; width: 56%; height: 257px; }
-    .example-note { margin-top: 22px; padding-top: 22px; text-align: left; font-size: 14px; }
     .comparison-section { margin-top: 0; }
     .section-intro { text-align: left; }
     .comparison-table, .comparison-table tbody { display: block; }
@@ -399,7 +393,6 @@
     .comparison-table tbody tr > * { border-bottom: 0; }
     .mobile-column-label { display: block; margin-bottom: 10px; color: #43586a; font-size: 15px; font-weight: 600; }
     .comparison-table td:last-child .mobile-column-label { color: #3155b2; }
-    .comparison-note { margin-top: 0; font-size: 14px; }
     .security-section { padding-block: 64px 30px; }
     .security-intro { text-align: left; }
     .security-intro > p { margin-top: 24px; font-size: 18px; }
@@ -407,7 +400,6 @@
     .responsibility-illustration { height: 270px; }
     .security-points h3 { font-size: 26px; }
     .security-points p { font-size: 17px; }
-    .security-note { margin-top: 19px; padding-top: 23px; text-align: left; font-size: 14px; }
     .process-grid { padding-left: 44px; gap: 34px; }
     .process-grid h3 { font-size: 25px; }
     .process-grid p { font-size: 17px; }
@@ -418,7 +410,7 @@
     .contact-section { padding-bottom: 40px; }
     .contact-panel { padding: 53px 0 18px; gap: 34px; }
     .contact-intro { padding-top: 0; }
-    .home-page .contact-intro h2 { font-size: 42px; }
+    main .contact-intro h2 { font-size: 42px; }
     .contact-description { margin-top: 24px; font-size: 18px; }
     .contact-next { font-size: 17px; }
     .contact-email a { font-size: 22px; }
@@ -443,7 +435,7 @@
     .website-preview { padding-inline: 19px; }
     .website-composition h4 { font-size: 30px; }
     .website-composition p { max-width: 131px; }
-    .home-page .contact-intro h2 { font-size: 37px; }
+    main .contact-intro h2 { font-size: 37px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .hero[data-pinned="true"] { height: auto; }

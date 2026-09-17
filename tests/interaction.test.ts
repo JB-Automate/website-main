@@ -113,10 +113,8 @@ test("invalid geometry and stages surface errors rather than invalid animations"
 
 test("all three service chapters retain their order and one readable illustrative task", () => {
   assert.deepEqual(siteContent.services.items.map((service) => service.id), ["apps", "workflows", "websites"]);
-  const { task, note } = siteContent.work;
+  const { task } = siteContent.work;
   assert.ok(task.label && task.heading && task.lines.length === 2);
-  assert.match(note, /Illustrative examples, not client systems/);
-  assert.match(note, /No business data is used or sent/);
 });
 
 test("section content no longer carries decorative eyebrow copy", () => {

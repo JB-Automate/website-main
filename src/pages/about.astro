@@ -1,4 +1,5 @@
 ---
+import "../styles/home.css";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Contact from "../components/Contact.astro";
 import Icon from "../components/Icon.astro";
@@ -41,7 +42,6 @@ const { about } = siteContent;
       </div>
       <div class="about-experience-copy">
         <p>{about.experience}</p>
-        <p class="about-disclosure">{about.disclosure}</p>
       </div>
     </section>
 

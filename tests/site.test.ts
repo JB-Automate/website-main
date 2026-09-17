@@ -104,10 +104,9 @@ test("mailto links encode reserved mailbox characters without losing the address
 test("proof is factual and example content is explicitly labeled", () => {
   assert.equal(siteContent.proof.verifiedOutcome, null);
   assert.match(siteContent.proof.heading, /Government of Alberta/);
-  assert.equal(siteContent.work.label, "Illustrative example");
 });
 
-test("comparison covers the agreed business concerns with a visible scope note", () => {
+test("comparison covers the agreed business concerns", () => {
   assert.equal(siteContent.comparison.leftHeading, "What Claude gives out");
   assert.equal(siteContent.comparison.rightHeading, "What we provide");
   assert.deepEqual(siteContent.comparison.rows.map((row) => row.criterion), [
@@ -119,5 +118,4 @@ test("comparison covers the agreed business concerns with a visible scope note",
     "Expert-built architecture",
     "Support after launch",
   ]);
-  assert.match(siteContent.comparison.note, /not the full capabilities or enterprise offerings of Claude/);
 });
