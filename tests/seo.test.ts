@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readdirSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
 import { serviceLandings } from "../src/content/ads.ts";
@@ -325,4 +326,21 @@ test("the opt-out list covers the crawlers that collect training data", () => {
   for (const answerEngine of ["OAI-SearchBot", "PerplexityBot", "ChatGPT-User", "Claude-SearchBot"]) {
     assert.ok(!aiTrainingCrawlers.includes(answerEngine as never), `${answerEngine} must stay allowed`);
   }
+});
+
+test("search engines are offered a favicon they can actually read", async () => {
+  const layout = await readFile(new URL("../src/layouts/BaseLayout.astro", import.meta.url), "utf8");
+  const icons = [...layout.matchAll(/<link rel="icon"[^>]*href="([^"]+)"/g)].map((match) => match[1]);
+  // Google Search reads no SVG favicons and falls back to /favicon.ico, so the ICO has to be
+  // declared first. Lead with the SVG again and results go back to the generic globe.
+  assert.equal(icons[0], "/favicon.ico");
+  assert.ok(icons.includes("/icon-192.png"), "the raster icon must stay declared");
+
+  const ico = await readFile(new URL("../public/favicon.ico", import.meta.url));
+  assert.equal(ico.readUInt16LE(0), 0);
+  assert.equal(ico.readUInt16LE(2), 1, "favicon.ico must be a real ICO, not a renamed PNG");
+  // A width byte of 0 encodes 256px. Google renders best above 48x48, so ship both.
+  const widths = Array.from({ length: ico.readUInt16LE(4) }, (_, index) => ico[6 + index * 16] || 256);
+  assert.ok(widths.includes(48), `favicon.ico is missing a 48px frame: ${widths.join(", ")}`);
+  assert.ok(widths.some((width) => width > 48), `favicon.ico has nothing above 48px: ${widths.join(", ")}`);
 });
