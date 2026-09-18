@@ -320,6 +320,11 @@ const config = getContactConfig({
 
       if (!available) {
         captureStaticEnquiry(result.values);
+        window.dispatchEvent(
+          new CustomEvent("jb:lead-submitted", {
+            detail: { email: result.values.email }
+          })
+        );
         if (draftEmail(result.values)) {
           announce("Your email app should now open with these details. Send it from there and it reaches us.", false, false);
           emailGuidance.hidden = false;
