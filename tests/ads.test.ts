@@ -9,7 +9,8 @@ test("the shared layout installs one Google tag for every page", async () => {
   const layout = await readFile(new URL("../src/layouts/BaseLayout.astro", import.meta.url), "utf8");
   const consent = await readFile(new URL("../src/components/AdvertisingConsent.astro", import.meta.url), "utf8");
   assert.equal(layout.match(/googletagmanager\.com\/gtag\/js\?id=AW-18455975650/g)?.length, 1);
-  assert.equal(layout.match(/gtag\("config", "AW-18455975650"\)/g)?.length, 1);
+  const bootstrap = await readFile(new URL("../src/scripts/google-tag.js", import.meta.url), "utf8");
+  assert.equal(bootstrap.match(/gtag\("config", "AW-18455975650"\)/g)?.length, 1);
   assert.doesNotMatch(consent, /createElement\("script"\)|googletagmanager\.com\/gtag\/js/);
 });
 
@@ -64,5 +65,44 @@ test("initial targeting stays exact and phrase with a cross-campaign negative li
   }
   for (const negative of ["jobs", "free", "automotive", "home automation", "industrial automation"]) {
     assert.ok(launch.sharedNegativeKeywords.includes(negative), negative);
+  }
+});
+
+test("consented successful leads send the exact conversion; other visits do not", async () => {
+  const { runInNewContext } = await import("node:vm");
+  const source = await readFile(new URL("../src/scripts/advertising-consent.js", import.meta.url), "utf8");
+  for (const choice of [null, "denied", "granted"]) {
+    const calls: unknown[][] = [];
+    const listeners: Record<string, (event: unknown) => void> = {};
+    const banner = { hidden: true, querySelectorAll: () => [] };
+    const storage = new Map(choice ? [["jb-ads-consent", choice]] : []);
+    const store = {
+      getItem: (key: string) => storage.get(key) ?? null,
+      setItem: (key: string, value: string) => storage.set(key, value),
+      removeItem: (key: string) => storage.delete(key),
+    };
+    runInNewContext(source, {
+      adsId: "AW-18455975650", conversionLabel: "BeTCCJ39x_scEOKtv-BE",
+      document: { querySelector: () => banner },
+      localStorage: store, sessionStorage: store, URLSearchParams,
+      CustomEvent: class { type: string; constructor(type: string) { this.type = type; } },
+      window: {
+        location: { search: "" },
+        gtag: (...args: unknown[]) => calls.push(args),
+        dispatchEvent: () => {},
+        addEventListener: (name: string, handler: (event: unknown) => void) => { listeners[name] = handler; },
+      },
+    });
+    assert.equal(banner.hidden, choice !== null);
+    assert.equal(calls.filter(call => call[0] === "event").length, 0, "page views must not count as conversions");
+    listeners["jb:lead-submitted"]({ detail: {} });
+    assert.equal(calls.filter(call => call[0] === "event").length, 0);
+    listeners["jb:lead-submitted"]({ detail: { email: "tracking-test@example.com" } });
+    const conversions = calls.filter(call => call[0] === "event");
+    assert.equal(conversions.length, choice === "granted" ? 1 : 0);
+    if (choice === "granted") {
+      assert.equal(conversions[0][1], "conversion");
+      assert.equal((conversions[0][2] as { send_to: string }).send_to, "AW-18455975650/BeTCCJ39x_scEOKtv-BE");
+    }
   }
 });

@@ -1,4 +1,6 @@
 ---
+import { createHash } from "node:crypto";
+import { googleTagScript, consentScript } from "../lib/ads-scripts";
 import "@fontsource-variable/manrope";
 import "@fontsource-variable/kode-mono";
 import manropeLatin from "@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url";
@@ -38,6 +40,10 @@ const canonicalUrl = new URL(canonicalPath(Astro.url.pathname), siteConfig.url);
 const socialImageUrl = new URL(brandImages.social.path, siteConfig.url);
 const logoUrl = new URL(brandImages.logo.path, siteConfig.url);
 const jsonLd = serializeJsonLd(buildJsonLdGraph(seoSite, Astro.url.pathname));
+// Hash the exact emitted bytes, including whitespace, for inline CSP authorization.
+for (const script of [googleTagScript, ...(siteConfig.ads.enabled ? [consentScript] : [])]) {
+  Astro.csp?.insertScriptHash(`sha256-${createHash("sha256").update(script).digest("base64")}`);
+}
 ---
 
 <!doctype html>
@@ -45,19 +51,7 @@ const jsonLd = serializeJsonLd(buildJsonLdGraph(seoSite, Astro.url.pathname));
   <head>
     <!-- Google tag (gtag.js) -->
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=AW-18455975650"></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag("consent", "default", {
-        ad_storage: "denied",
-        ad_user_data: "denied",
-        ad_personalization: "denied",
-        analytics_storage: "denied",
-        wait_for_update: 500,
-      });
-      gtag("js", new Date());
-      gtag("config", "AW-18455975650");
-    </script>
+    <script is:inline set:html={googleTagScript} />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f8f7f2" />

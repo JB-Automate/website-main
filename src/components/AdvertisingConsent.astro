@@ -1,5 +1,7 @@
 ---
+import { consentScript } from "../lib/ads-scripts";
 import { siteConfig } from "../lib/site-config";
+
 ---
 
 {siteConfig.ads.enabled && (
@@ -16,60 +18,5 @@ import { siteConfig } from "../lib/site-config";
 )}
 
 {siteConfig.ads.enabled && (
-  <script is:inline define:vars={{ adsId: siteConfig.ads.id, conversionLabel: siteConfig.ads.conversionLabel }}>
-    (() => {
-      const storageKey = "jb-ads-consent";
-      const attributionKey = "jb-ad-attribution";
-      const allowedAttribution = ["gclid", "gbraid", "wbraid", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
-      const banner = document.querySelector("[data-consent-banner]");
-
-      function rememberAttribution() {
-        const params = new URLSearchParams(window.location.search);
-        const existing = (() => {
-          try { return JSON.parse(sessionStorage.getItem(attributionKey) || "{}"); }
-          catch { return {}; }
-        })();
-        for (const key of allowedAttribution) {
-          const value = params.get(key);
-          if (value && value.length <= 500) existing[key] = value;
-        }
-        sessionStorage.setItem(attributionKey, JSON.stringify(existing));
-      }
-
-      function applyChoice(choice) {
-        localStorage.setItem(storageKey, choice);
-        const granted = choice === "granted";
-        window.gtag("consent", "update", {
-          ad_storage: granted ? "granted" : "denied",
-          ad_user_data: granted ? "granted" : "denied",
-          ad_personalization: "denied",
-          analytics_storage: "denied",
-        });
-        if (granted) {
-          rememberAttribution();
-        } else {
-          sessionStorage.removeItem(attributionKey);
-        }
-        if (banner) banner.hidden = true;
-        window.dispatchEvent(new CustomEvent("jb:ads-consent", { detail: { choice } }));
-      }
-
-      let savedChoice = null;
-      try { savedChoice = localStorage.getItem(storageKey); } catch {}
-      if (savedChoice === "granted" || savedChoice === "denied") applyChoice(savedChoice);
-      else if (banner) banner.hidden = false;
-
-      banner?.querySelectorAll("[data-consent-choice]").forEach((button) => {
-        button.addEventListener("click", () => applyChoice(button.dataset.consentChoice));
-      });
-
-      window.addEventListener("jb:lead-submitted", (event) => {
-        let choice = null;
-        try { choice = localStorage.getItem(storageKey); } catch {}
-        if (choice !== "granted" || !event.detail?.email) return;
-        window.gtag("set", "user_data", { email: event.detail.email });
-        window.gtag("event", "conversion", { send_to: `${adsId}/${conversionLabel}` });
-      });
-    })();
-  </script>
+  <script is:inline set:html={consentScript} />
 )}

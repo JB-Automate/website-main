@@ -24,15 +24,16 @@ export default defineConfig({
     csp: {
       directives: [
         "default-src 'self'",
-        "img-src 'self' data: https://www.google.com https://www.google.ca https://www.googleadservices.com https://googleads.g.doubleclick.net",
+        "img-src 'self' data: https://www.google.com https://www.google.ca https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.googletagmanager.com https://pagead2.googlesyndication.com https://google.com",
         "font-src 'self'",
-        `connect-src 'self' https://www.google.com https://www.google.ca https://www.googleadservices.com https://googleads.g.doubleclick.net https://td.doubleclick.net${supabaseOrigin ? ` ${supabaseOrigin}` : ""}`,
+        `connect-src 'self' https://www.google.com https://www.google.ca https://www.googleadservices.com https://googleads.g.doubleclick.net https://td.doubleclick.net https://pagead2.googlesyndication.com https://ad.doubleclick.net https://google.com${supabaseOrigin ? ` ${supabaseOrigin}` : ""}`,
+        "frame-src https://www.googletagmanager.com",
         "object-src 'none'",
         "base-uri 'self'",
         "form-action 'self'",
       ],
       scriptDirective: {
-        resources: ["'self'", "https://www.googletagmanager.com"],
+        resources: ["'self'", "https://www.googletagmanager.com", "https://www.googleadservices.com", "https://www.google.com", "https://pagead2.googlesyndication.com", "https://googleads.g.doubleclick.net"],
       },
     },
   },
