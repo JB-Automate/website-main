@@ -5,12 +5,19 @@ import { siteConfig } from "../lib/site-config.ts";
 
 const config = getContactConfig({
   SITE_MODE: process.env.SITE_MODE ?? import.meta.env.SITE_MODE,
-  PUBLIC_SITE_URL: process.env.PUBLIC_SITE_URL ?? import.meta.env.PUBLIC_SITE_URL,
-  PUBLIC_CONTACT_EMAIL: process.env.PUBLIC_CONTACT_EMAIL ?? import.meta.env.PUBLIC_CONTACT_EMAIL,
-  RESEND_API_KEY: process.env.RESEND_API_KEY ?? import.meta.env.RESEND_API_KEY,
-  CONTACT_FROM_EMAIL: process.env.CONTACT_FROM_EMAIL ?? import.meta.env.CONTACT_FROM_EMAIL,
-  CONTACT_TO_EMAIL: process.env.CONTACT_TO_EMAIL ?? import.meta.env.CONTACT_TO_EMAIL,
-  CONTACT_RATE_LIMIT_CONFIGURED: process.env.CONTACT_RATE_LIMIT_CONFIGURED ?? import.meta.env.CONTACT_RATE_LIMIT_CONFIGURED,
+  PUBLIC_SITE_URL:
+    process.env.PUBLIC_SITE_URL ?? import.meta.env.PUBLIC_SITE_URL,
+  PUBLIC_CONTACT_EMAIL:
+    process.env.PUBLIC_CONTACT_EMAIL ?? import.meta.env.PUBLIC_CONTACT_EMAIL,
+  RESEND_API_KEY:
+    process.env.RESEND_API_KEY ?? import.meta.env.RESEND_API_KEY,
+  CONTACT_FROM_EMAIL:
+    process.env.CONTACT_FROM_EMAIL ?? import.meta.env.CONTACT_FROM_EMAIL,
+  CONTACT_TO_EMAIL:
+    process.env.CONTACT_TO_EMAIL ?? import.meta.env.CONTACT_TO_EMAIL,
+  CONTACT_RATE_LIMIT_CONFIGURED:
+    process.env.CONTACT_RATE_LIMIT_CONFIGURED ??
+    import.meta.env.CONTACT_RATE_LIMIT_CONFIGURED,
 });
 ---
 
@@ -24,18 +31,65 @@ const config = getContactConfig({
   data-contact-available={String(config.available)}
   data-contact-email={siteConfig.email}
 >
-  <input type="hidden" name="source_page" value="" data-attribution="source_page" />
-  <input type="hidden" name="gclid" value="" data-attribution="gclid" />
-  <input type="hidden" name="gbraid" value="" data-attribution="gbraid" />
-  <input type="hidden" name="wbraid" value="" data-attribution="wbraid" />
-  <input type="hidden" name="utm_source" value="" data-attribution="utm_source" />
-  <input type="hidden" name="utm_medium" value="" data-attribution="utm_medium" />
-  <input type="hidden" name="utm_campaign" value="" data-attribution="utm_campaign" />
-  <input type="hidden" name="utm_term" value="" data-attribution="utm_term" />
-  <input type="hidden" name="utm_content" value="" data-attribution="utm_content" />
+  <input
+    type="hidden"
+    name="source_page"
+    value=""
+    data-attribution="source_page"
+  />
+  <input
+    type="hidden"
+    name="gclid"
+    value=""
+    data-attribution="gclid"
+  />
+  <input
+    type="hidden"
+    name="gbraid"
+    value=""
+    data-attribution="gbraid"
+  />
+  <input
+    type="hidden"
+    name="wbraid"
+    value=""
+    data-attribution="wbraid"
+  />
+  <input
+    type="hidden"
+    name="utm_source"
+    value=""
+    data-attribution="utm_source"
+  />
+  <input
+    type="hidden"
+    name="utm_medium"
+    value=""
+    data-attribution="utm_medium"
+  />
+  <input
+    type="hidden"
+    name="utm_campaign"
+    value=""
+    data-attribution="utm_campaign"
+  />
+  <input
+    type="hidden"
+    name="utm_term"
+    value=""
+    data-attribution="utm_term"
+  />
+  <input
+    type="hidden"
+    name="utm_content"
+    value=""
+    data-attribution="utm_content"
+  />
+
   <div class="form-row">
     <div class="form-field">
       <label class="sr-only" for="enquiry-name">Your name</label>
+
       <input
         id="enquiry-name"
         name="name"
@@ -46,10 +100,13 @@ const config = getContactConfig({
         maxlength={CONTACT_LIMITS.name}
         aria-describedby="enquiry-name-error"
       />
+
       <p class="field-error" id="enquiry-name-error" hidden></p>
     </div>
+
     <div class="form-field">
       <label class="sr-only" for="enquiry-email">Email address</label>
+
       <input
         id="enquiry-email"
         name="email"
@@ -62,11 +119,16 @@ const config = getContactConfig({
         maxlength={CONTACT_LIMITS.email}
         aria-describedby="enquiry-email-error"
       />
+
       <p class="field-error" id="enquiry-email-error" hidden></p>
     </div>
   </div>
+
   <div class="form-field">
-    <label class="sr-only" for="enquiry-company">Business name (optional)</label>
+    <label class="sr-only" for="enquiry-company">
+      Business name (optional)
+    </label>
+
     <input
       id="enquiry-company"
       name="company"
@@ -76,10 +138,15 @@ const config = getContactConfig({
       maxlength={CONTACT_LIMITS.company}
       aria-describedby="enquiry-company-error"
     />
+
     <p class="field-error" id="enquiry-company-error" hidden></p>
   </div>
+
   <div class="form-field">
-    <label class="sr-only" for="enquiry-message">What would you like to make easier or build?</label>
+    <label class="sr-only" for="enquiry-message">
+      What would you like to make easier or build?
+    </label>
+
     <textarea
       id="enquiry-message"
       name="message"
@@ -89,35 +156,83 @@ const config = getContactConfig({
       placeholder="What would you like to make easier or build? For example, we spend too much time moving information between systems."
       aria-describedby="enquiry-information enquiry-message-error"
     ></textarea>
+
     <p class="field-error" id="enquiry-message-error" hidden></p>
   </div>
 
   <div class="contact-honeypot" aria-hidden="true">
     <label for="enquiry-website">Leave this field blank</label>
-    <input id="enquiry-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+
+    <input
+      id="enquiry-website"
+      name="website"
+      type="text"
+      tabindex="-1"
+      autocomplete="off"
+    />
   </div>
 
   <p class="form-note" id="enquiry-information">
-    Share a high-level summary. Please do not include confidential business information or personal records.
-    {" "}<a href="/privacy/">Read our privacy notice.</a>
+    Share a high-level summary. Please do not include confidential business
+    information or personal records.
+    {" "}
+    <a href="/privacy/">Read our privacy notice.</a>
   </p>
 
   <button class="button button--primary form-submit" type="submit">
     <span data-submit-label>Send your enquiry</span>
+
     <span class="submit-icon" aria-hidden="true">
-      <svg class="submit-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+      <svg
+        class="submit-arrow"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        focusable="false"
+      >
         <path d="M5 12h14m-6-6 6 6-6 6"></path>
       </svg>
+
       <span class="submit-check">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          focusable="false"
+        >
           <path d="m4.5 12.5 5 5.5L19.5 6"></path>
         </svg>
       </span>
     </span>
   </button>
 
-  <p class="sr-only" id="enquiry-alert" role="alert" aria-live="assertive" aria-atomic="true"></p>
-  <p class="form-status" id="enquiry-status" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>
+  <p
+    class="sr-only"
+    id="enquiry-alert"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+  ></p>
+
+  <p
+    class="form-status"
+    id="enquiry-status"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    tabindex="-1"
+  ></p>
+
   <p class="form-note" id="enquiry-email-guidance" hidden>
     You can also email <a href={siteConfig.emailHref}>{siteConfig.email}</a>.
   </p>
@@ -135,131 +250,283 @@ const config = getContactConfig({
 </style>
 
 <script>
-  import { CONTACT_FIELD_NAMES, mailtoHref, validateContactInput } from "../lib/contact-validation.ts";
+  import {
+    CONTACT_FIELD_NAMES,
+    mailtoHref,
+    validateContactInput,
+  } from "../lib/contact-validation.ts";
+
   import { captureStaticEnquiry } from "../lib/browser-enquiry-store.ts";
-  import type { ContactFieldErrors, ContactFieldName, Enquiry } from "../lib/contact-validation.ts";
+
+  import type {
+    ContactFieldErrors,
+    ContactFieldName,
+    Enquiry,
+  } from "../lib/contact-validation.ts";
 
   function enhanceEnquiryForm() {
-    const form = document.querySelector<HTMLFormElement>("#enquiry-form");
-    const button = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
-    const buttonLabel = button?.querySelector<HTMLElement>("[data-submit-label]");
-    const status = form?.querySelector<HTMLElement>("#enquiry-status");
-    const alerts = form?.querySelector<HTMLElement>("#enquiry-alert");
-    const emailGuidance = form?.querySelector<HTMLElement>("#enquiry-email-guidance");
-    const honeypot = form?.querySelector<HTMLInputElement>("#enquiry-website");
-    if (!form || !button || !buttonLabel || !status || !alerts || !emailGuidance || !honeypot) return;
+    const form =
+      document.querySelector<HTMLFormElement>("#enquiry-form");
 
-    const fields = {} as Record<ContactFieldName, HTMLInputElement | HTMLTextAreaElement>;
+    const button =
+      form?.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+    const buttonLabel =
+      button?.querySelector<HTMLElement>("[data-submit-label]");
+
+    const status =
+      form?.querySelector<HTMLElement>("#enquiry-status");
+
+    const alerts =
+      form?.querySelector<HTMLElement>("#enquiry-alert");
+
+    const emailGuidance =
+      form?.querySelector<HTMLElement>("#enquiry-email-guidance");
+
+    const honeypot =
+      form?.querySelector<HTMLInputElement>("#enquiry-website");
+
+    if (
+      !form ||
+      !button ||
+      !buttonLabel ||
+      !status ||
+      !alerts ||
+      !emailGuidance ||
+      !honeypot
+    ) {
+      return;
+    }
+
+    const fields = {} as Record<
+      ContactFieldName,
+      HTMLInputElement | HTMLTextAreaElement
+    >;
+
     const errorNodes = {} as Record<ContactFieldName, HTMLElement>;
+
     for (const name of CONTACT_FIELD_NAMES) {
       const field = form.elements.namedItem(name);
-      const errorNode = document.getElementById(`enquiry-${name}-error`);
-      if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement) || !errorNode) return;
+
+      const errorNode =
+        document.getElementById(`enquiry-${name}-error`);
+
+      if (
+        !(
+          field instanceof HTMLInputElement ||
+          field instanceof HTMLTextAreaElement
+        ) ||
+        !errorNode
+      ) {
+        return;
+      }
+
       fields[name] = field;
       errorNodes[name] = errorNode;
     }
 
-    const available = form.dataset.contactAvailable === "true";
-    const defaultLabel = buttonLabel.textContent ?? "Send your enquiry";
+    const available =
+      form.dataset.contactAvailable === "true";
+
+    const defaultLabel =
+      buttonLabel.textContent ?? "Send your enquiry";
+
     let pending = false;
+
     form.noValidate = true;
 
-    const attributionFields = Array.from(form.querySelectorAll<HTMLInputElement>("[data-attribution]"));
+    const attributionFields = Array.from(
+      form.querySelectorAll<HTMLInputElement>("[data-attribution]"),
+    );
 
     function applyAttribution() {
       let attribution: Record<string, string> = {};
+
       try {
         if (localStorage.getItem("jb-ads-consent") === "granted") {
-          attribution = JSON.parse(sessionStorage.getItem("jb-ad-attribution") ?? "{}");
+          attribution = JSON.parse(
+            sessionStorage.getItem("jb-ad-attribution") ?? "{}",
+          );
         }
       } catch {
         attribution = {};
       }
+
       for (const field of attributionFields) {
         const key = field.dataset.attribution;
+
         if (!key) continue;
-        field.value = key === "source_page" ? window.location.pathname : attribution[key] ?? "";
+
+        field.value =
+          key === "source_page"
+            ? window.location.pathname
+            : attribution[key] ?? "";
       }
     }
 
     applyAttribution();
-    window.addEventListener("jb:ads-consent", applyAttribution);
 
-    function showErrors(errors: ContactFieldErrors = {}) {
+    window.addEventListener(
+      "jb:ads-consent",
+      applyAttribution,
+    );
+
+    function showErrors(
+      errors: ContactFieldErrors = {},
+    ) {
       for (const name of CONTACT_FIELD_NAMES) {
-        errorNodes[name].textContent = errors[name] ?? "";
-        errorNodes[name].hidden = !errors[name];
-        if (errors[name]) fields[name].setAttribute("aria-invalid", "true");
-        else fields[name].removeAttribute("aria-invalid");
+        errorNodes[name].textContent =
+          errors[name] ?? "";
+
+        errorNodes[name].hidden =
+          !errors[name];
+
+        if (errors[name]) {
+          fields[name].setAttribute(
+            "aria-invalid",
+            "true",
+          );
+        } else {
+          fields[name].removeAttribute(
+            "aria-invalid",
+          );
+        }
       }
-      const first = CONTACT_FIELD_NAMES.find((name) => errors[name]);
-      return first ? fields[first] : undefined;
+
+      const first = CONTACT_FIELD_NAMES.find(
+        (name) => errors[name],
+      );
+
+      return first
+        ? fields[first]
+        : undefined;
     }
 
     function shake() {
       button!.removeAttribute("data-shake");
+
       void button!.offsetWidth;
+
       button!.setAttribute("data-shake", "");
     }
 
     function alertText(message: string) {
       alerts!.textContent = "";
+
       requestAnimationFrame(() => {
         alerts!.textContent = message;
       });
     }
 
-    function rejectFields(errors: ContactFieldErrors) {
+    function rejectFields(
+      errors: ContactFieldErrors,
+    ) {
       const first = showErrors(errors);
+
       status!.textContent = "";
+
       delete status!.dataset.state;
+
       emailGuidance!.hidden = true;
+
       shake();
-      alertText(CONTACT_FIELD_NAMES.filter((name) => errors[name]).map((name) => errors[name]).join(" "));
+
+      alertText(
+        CONTACT_FIELD_NAMES
+          .filter((name) => errors[name])
+          .map((name) => errors[name])
+          .join(" "),
+      );
+
       first?.focus();
     }
 
-    function announce(message: string, failed = false, focus = true) {
+    function announce(
+      message: string,
+      failed = false,
+      focus = true,
+    ) {
       status!.textContent = message;
-      status!.dataset.state = failed ? "error" : "status";
-      emailGuidance!.hidden = !failed;
-      if (failed) shake();
-      if (focus) status!.focus();
+
+      status!.dataset.state =
+        failed ? "error" : "status";
+
+      emailGuidance!.hidden =
+        !failed;
+
+      if (failed) {
+        shake();
+      }
+
+      if (focus) {
+        status!.focus();
+      }
     }
 
     function setPending(value: boolean) {
       pending = value;
-      button!.setAttribute("aria-busy", String(value));
-      for (const name of CONTACT_FIELD_NAMES) fields[name].readOnly = value;
+
+      button!.setAttribute(
+        "aria-busy",
+        String(value),
+      );
+
+      for (const name of CONTACT_FIELD_NAMES) {
+        fields[name].readOnly = value;
+      }
+
       if (value) {
         button!.dataset.state = "sending";
-        buttonLabel!.textContent = "Sending your enquiry…";
-      } else if (button!.dataset.state === "sending") {
+
+        buttonLabel!.textContent =
+          "Sending your enquiry…";
+      } else if (
+        button!.dataset.state === "sending"
+      ) {
         delete button!.dataset.state;
-        buttonLabel!.textContent = defaultLabel;
+
+        buttonLabel!.textContent =
+          defaultLabel;
       }
     }
 
     function markSent() {
       button!.dataset.state = "sent";
-      buttonLabel!.textContent = "Enquiry sent";
+
+      buttonLabel!.textContent =
+        "Enquiry sent";
     }
 
     function clearSent() {
-      if (!button!.dataset.state || button!.dataset.state === "sending") return;
+      if (
+        !button!.dataset.state ||
+        button!.dataset.state === "sending"
+      ) {
+        return;
+      }
+
       delete button!.dataset.state;
-      buttonLabel!.textContent = defaultLabel;
+
+      buttonLabel!.textContent =
+        defaultLabel;
     }
 
-    /** Without a delivery endpoint the enquiry is handed to the visitor's own email app. */
+    /**
+     * Without a delivery endpoint the enquiry is handed
+     * to the visitor's own email app.
+     */
     function draftEmail(values: Enquiry): boolean {
-      const address = form!.dataset.contactEmail ?? "";
+      const address =
+        form!.dataset.contactEmail ?? "";
+
       let href: string;
+
       try {
         href = mailtoHref(address);
       } catch {
         return false;
       }
+
       const body = [
         `Name: ${values.name}`,
         `Email: ${values.email}`,
@@ -269,147 +536,373 @@ const config = getContactConfig({
         "",
         values.message,
       ].join("\n");
-      const query = new URLSearchParams({ subject: `Website enquiry from ${values.name}`, body });
-      // A mailto link expects percent-encoded spaces rather than the plus signs a query string uses.
-      window.location.href = `${href}?${query.toString().replace(/\+/g, "%20")}`;
-      button!.dataset.state = "drafted";
-      buttonLabel!.textContent = "Email drafted";
+
+      const query =
+        new URLSearchParams({
+          subject: `Website enquiry from ${values.name}`,
+          body,
+        });
+
+      window.location.href =
+        `${href}?${query
+          .toString()
+          .replace(/\+/g, "%20")}`;
+
+      button!.dataset.state =
+        "drafted";
+
+      buttonLabel!.textContent =
+        "Email drafted";
+
       return true;
     }
 
     function failure() {
-      announce("We couldn’t confirm your enquiry was sent. Your details are still here; please try again or email us directly.", true);
+      announce(
+        "We couldn’t confirm your enquiry was sent. Your details are still here; please try again or email us directly.",
+        true,
+      );
     }
 
-    function isRecord(value: unknown): value is Record<string, unknown> {
-      return value !== null && typeof value === "object" && !Array.isArray(value);
+    function isRecord(
+      value: unknown,
+    ): value is Record<string, unknown> {
+      return (
+        value !== null &&
+        typeof value === "object" &&
+        !Array.isArray(value)
+      );
     }
 
-    button.addEventListener("animationend", () => button!.removeAttribute("data-shake"));
+    button.addEventListener(
+      "animationend",
+      () =>
+        button!.removeAttribute(
+          "data-shake",
+        ),
+    );
 
     for (const name of CONTACT_FIELD_NAMES) {
-      fields[name].addEventListener("input", () => {
-        fields[name].removeAttribute("aria-invalid");
-        errorNodes[name].textContent = "";
-        errorNodes[name].hidden = true;
-        clearSent();
-      });
+      fields[name].addEventListener(
+        "input",
+        () => {
+          fields[name].removeAttribute(
+            "aria-invalid",
+          );
+
+          errorNodes[name].textContent =
+            "";
+
+          errorNodes[name].hidden =
+            true;
+
+          clearSent();
+        },
+      );
     }
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      if (pending) return;
-      clearSent();
+    form.addEventListener(
+      "submit",
+      async (event) => {
+        event.preventDefault();
 
-      showErrors();
-      const result = validateContactInput({
-        name: fields.name.value,
-        email: fields.email.value,
-        company: fields.company.value,
-        message: fields.message.value,
-        website: honeypot.value,
-      });
-      if (!result.ok) {
-        if (result.reason === "invalid_fields") {
-          rejectFields(result.errors);
-        } else {
-          announce("Please check your details. Your enquiry has not been sent.", true);
-        }
-        return;
-      }
+        if (pending) return;
 
-      if (!available) {
-        captureStaticEnquiry(result.values);
-        window.dispatchEvent(
-          new CustomEvent("jb:lead-submitted", {
-            detail: { email: result.values.email }
-          })
-        );
-        if (draftEmail(result.values)) {
-          announce("Your email app should now open with these details. Send it from there and it reaches us.", false, false);
-          emailGuidance.hidden = false;
-          alertText("Your email app should now open with these details. Send it from there and it reaches us.");
-        } else {
-          announce("Enquiry sending is unavailable right now. Your details are still here; please use the email option if one is listed.", true);
-        }
-        return;
-      }
+        clearSent();
 
-      setPending(true);
-      announce("Sending your enquiry…", false, false);
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 15_000);
-      try {
-        applyAttribution();
-        const response = await fetch("/api/contact", {
-          method: "POST",
-          mode: "same-origin",
-          credentials: "omit",
-          redirect: "error",
-          cache: "no-store",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ ...result.values, website: "" }),
-          signal: controller.signal,
-        });
+        showErrors();
 
-        if (response.status === 429) {
-          announce("Please wait a little before trying again, or email us directly. Your details are still here.", true);
-          return;
-        }
-        if (!/^application\/json(?:\s*;|$)/i.test(response.headers.get("content-type") ?? "")) {
-          failure();
-          return;
-        }
-        const payload: unknown = await response.json();
-        if (!isRecord(payload)) {
-          failure();
-          return;
-        }
-        if (response.status === 200 && payload.ok === true && typeof payload.message === "string") {
-          const leadEmail = result.values.email;
-          form.reset();
-          applyAttribution();
-          showErrors();
-          markSent();
-          status.textContent = "";
-          delete status.dataset.state;
-          emailGuidance.hidden = true;
-          window.dispatchEvent(new CustomEvent("jb:lead-submitted", { detail: { email: leadEmail } }));
-          alertText("Your enquiry has been sent.");
-          return;
-        }
+        const result =
+          validateContactInput({
+            name: fields.name.value,
+            email: fields.email.value,
+            company: fields.company.value,
+            message: fields.message.value,
+            website: honeypot.value,
+          });
 
-        const errors: ContactFieldErrors = {};
-        if (payload.ok === false && isRecord(payload.errors)) {
-          for (const name of CONTACT_FIELD_NAMES) {
-            const error = payload.errors[name];
-            if (typeof error === "string" && error.length <= 200) errors[name] = error;
+        if (!result.ok) {
+          if (
+            result.reason === "invalid_fields"
+          ) {
+            rejectFields(
+              result.errors,
+            );
+          } else {
+            announce(
+              "Please check your details. Your enquiry has not been sent.",
+              true,
+            );
           }
+
+          return;
         }
-        if (response.status === 422 && CONTACT_FIELD_NAMES.some((name) => errors[name])) {
-          rejectFields(errors);
-        } else if (response.status === 503) {
-          showErrors(errors);
-          announce("Enquiry sending is unavailable right now. Your details are still here; please use the email option if one is listed.", true);
-        } else {
-          showErrors(errors);
-          failure();
+
+        /*
+         * STATIC / GITHUB PAGES FLOW
+         *
+         * Store the lead in Supabase first.
+         *
+         * Only when Supabase confirms a successful insert
+         * do we dispatch jb:lead-submitted.
+         *
+         * AdvertisingConsent.astro listens for that event
+         * and sends the Google Ads conversion event.
+         */
+        if (!available) {
+          setPending(true);
+
+          let captured = false;
+
+          try {
+            captured =
+              await captureStaticEnquiry(
+                result.values,
+              );
+          } finally {
+            setPending(false);
+          }
+
+          if (captured) {
+            window.dispatchEvent(
+              new CustomEvent(
+                "jb:lead-submitted",
+                {
+                  detail: {
+                    email:
+                      result.values.email,
+                  },
+                },
+              ),
+            );
+          }
+
+          if (draftEmail(result.values)) {
+            announce(
+              captured
+                ? "Your enquiry has been received. Your email app should now open with these details."
+                : "Your email app should now open with these details. Send it from there and it reaches us.",
+              false,
+              false,
+            );
+
+            emailGuidance.hidden =
+              false;
+
+            alertText(
+              captured
+                ? "Your enquiry has been received. Your email app should now open with these details."
+                : "Your email app should now open with these details. Send it from there and it reaches us.",
+            );
+          } else {
+            if (captured) {
+              markSent();
+
+              announce(
+                "Your enquiry has been received.",
+                false,
+              );
+
+              alertText(
+                "Your enquiry has been received.",
+              );
+            } else {
+              announce(
+                "Enquiry sending is unavailable right now. Your details are still here; please use the email option if one is listed.",
+                true,
+              );
+            }
+          }
+
+          return;
         }
-      } catch (error) {
-        if (
-          error instanceof TypeError ||
-          error instanceof SyntaxError ||
-          (error instanceof DOMException && (error.name === "AbortError" || error.name === "TimeoutError"))
-        ) {
-          failure();
-        } else {
-          throw error;
+
+        /*
+         * SERVER / API FLOW
+         */
+        setPending(true);
+
+        announce(
+          "Sending your enquiry…",
+          false,
+          false,
+        );
+
+        const controller =
+          new AbortController();
+
+        const timeout =
+          setTimeout(
+            () =>
+              controller.abort(),
+            15_000,
+          );
+
+        try {
+          applyAttribution();
+
+          const response =
+            await fetch(
+              "/api/contact",
+              {
+                method: "POST",
+                mode: "same-origin",
+                credentials: "omit",
+                redirect: "error",
+                cache: "no-store",
+                headers: {
+                  "Content-Type":
+                    "application/json",
+                  Accept:
+                    "application/json",
+                },
+                body: JSON.stringify({
+                  ...result.values,
+                  website: "",
+                }),
+                signal:
+                  controller.signal,
+              },
+            );
+
+          if (response.status === 429) {
+            announce(
+              "Please wait a little before trying again, or email us directly. Your details are still here.",
+              true,
+            );
+
+            return;
+          }
+
+          if (
+            !/^application\/json(?:\s*;|$)/i.test(
+              response.headers.get(
+                "content-type",
+              ) ?? "",
+            )
+          ) {
+            failure();
+
+            return;
+          }
+
+          const payload: unknown =
+            await response.json();
+
+          if (!isRecord(payload)) {
+            failure();
+
+            return;
+          }
+
+          if (
+            response.status === 200 &&
+            payload.ok === true &&
+            typeof payload.message === "string"
+          ) {
+            const leadEmail =
+              result.values.email;
+
+            form.reset();
+
+            applyAttribution();
+
+            showErrors();
+
+            markSent();
+
+            status.textContent = "";
+
+            delete status.dataset.state;
+
+            emailGuidance.hidden =
+              true;
+
+            window.dispatchEvent(
+              new CustomEvent(
+                "jb:lead-submitted",
+                {
+                  detail: {
+                    email:
+                      leadEmail,
+                  },
+                },
+              ),
+            );
+
+            alertText(
+              "Your enquiry has been sent.",
+            );
+
+            return;
+          }
+
+          const errors:
+            ContactFieldErrors = {};
+
+          if (
+            payload.ok === false &&
+            isRecord(payload.errors)
+          ) {
+            for (
+              const name of CONTACT_FIELD_NAMES
+            ) {
+              const error =
+                payload.errors[name];
+
+              if (
+                typeof error === "string" &&
+                error.length <= 200
+              ) {
+                errors[name] = error;
+              }
+            }
+          }
+
+          if (
+            response.status === 422 &&
+            CONTACT_FIELD_NAMES.some(
+              (name) => errors[name],
+            )
+          ) {
+            rejectFields(errors);
+          } else if (
+            response.status === 503
+          ) {
+            showErrors(errors);
+
+            announce(
+              "Enquiry sending is unavailable right now. Your details are still here; please use the email option if one is listed.",
+              true,
+            );
+          } else {
+            showErrors(errors);
+
+            failure();
+          }
+        } catch (error) {
+          if (
+            error instanceof TypeError ||
+            error instanceof SyntaxError ||
+            (
+              error instanceof DOMException &&
+              (
+                error.name === "AbortError" ||
+                error.name === "TimeoutError"
+              )
+            )
+          ) {
+            failure();
+          } else {
+            throw error;
+          }
+        } finally {
+          clearTimeout(timeout);
+
+          setPending(false);
         }
-      } finally {
-        clearTimeout(timeout);
-        setPending(false);
-      }
-    });
+      },
+    );
   }
 
   enhanceEnquiryForm();
